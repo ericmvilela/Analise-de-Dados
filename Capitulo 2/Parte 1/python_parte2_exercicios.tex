@@ -1,0 +1,165 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4
+}
+\lstset{style=python}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 2: Python\\\large Caderno de Exercícios}
+\author{Tradução e Adaptação: Universidade de Helsinque (MOOC.fi)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}.
+
+\tableofcontents
+\newpage
+
+\section{Exercícios - Capítulo 2}
+
+\subsection*{Exercício 2.1 -- Inteiros entre colchetes}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escrever uma função \texttt{integers\_in\_brackets(s)} que retorne uma lista de todos os números inteiros que estejam isolados dentro de colchetes na string \texttt{s}.
+    \item \textbf{Restrições:} Pode haver espaços em branco entre os colchetes e os números, mas não pode haver nenhum caractere não-numérico (além do possível sinal de \texttt{+} ou \texttt{-}). Utilize expressões regulares (RegEx).
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 2.2 -- Listagem de arquivos}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escrever uma função \texttt{file\_listing(caminho)} que faça o parsing do arquivo \texttt{listing.txt}.
+    \item \textbf{Requisito:} O arquivo texto imita a saída do comando Linux \texttt{ls -l}. Cada linha possui permissões, links, usuário, grupo, \textbf{tamanho, mês, dia, hora:minuto, nome do arquivo}.
+    \item \textbf{Retorno esperado:} Uma lista contendo as tuplas formatadas da seguinte forma: \texttt{(tamanho (int), mês (str), dia (int), hora (int), minuto (int), nome (str))}. Use \texttt{re.match} ou \texttt{re.findall}.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 2.3 -- Vermelho, verde, azul (RGB)}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Criar uma função \texttt{red\_green\_blue(caminho)} para limpar e processar o arquivo \texttt{rgb.txt}.
+    \item \textbf{Procedimento:} Remova a primeira linha do arquivo (que é inútil para a análise). O restante das linhas deve ser filtrado.
+    \item \textbf{Saída:} Uma lista de strings, onde cada linha original é formatada para conter apenas os quatro campos originais (\texttt{R}, \texttt{G}, \texttt{B}, \texttt{Nome da Cor}), separados por exatamente uma tabulação (\texttt{\textbackslash t}). Utilize RegEx para limpar excessos de espaços.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 2.4 -- Frequência de palavras}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escrever \texttt{word\_frequencies(nome\_arquivo)} para contar as palavras do texto (ex: \texttt{alice.txt}).
+    \item \textbf{Limpeza:} Quebre cada linha em palavras usando \texttt{split()}. Em seguida, use o comando \texttt{strip(PONTUACAO)} para remover sinais gráficos soltos ao redor de cada palavra.
+    \item \textbf{Saída:} Retorne um dicionário (\texttt{dict}) onde as chaves são as palavras limpas e os valores são as quantidades absolutas de ocorrências.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 2.5 -- Resumo estatístico}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Desenvolver \texttt{summary(nome\_arquivo)} que calcule três medidas descritivas básicas de um arquivo contendo um número flutuante por linha.
+    \item \textbf{Cálculos:} Retornar uma tupla contendo a \textbf{soma}, a \textbf{média} e o \textbf{desvio padrão amostral} (\(N-1\)).
+    \item \textbf{Exceções:} Se o programa encontrar uma linha que não puder ser convertida para float, deve usar um bloco \texttt{try... except ValueError} para ignorar a linha de forma segura e continuar lendo o arquivo.
+    \item \textbf{Integração:} Crie um \texttt{main()} para invocar sua função iterando sob o array \texttt{sys.argv[1:]} recebido por terminal.
+\end{itemize}
+\end{exercicio}
+
+
+\subsection*{Exercício 2.6 -- Contagem de arquivo}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Criar a função \texttt{file\_count(nome\_arquivo)} para realizar análises de quantidade em um arquivo.
+    \item \textbf{Saída:} Tupla com o \textbf{(número de linhas, número de palavras, e número total de caracteres)}. 
+    \item \textbf{Terminal:} Crie o loop em \texttt{main()} iterando por \texttt{sys.argv} para imprimir na tela, com separações via tabulação (\texttt{\textbackslash t}).
+\end{itemize}
+\end{exercicio}
+
+
+\subsection*{Exercício 2.7 -- Extensões de arquivo}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escrever a função \texttt{file\_extensions(nome\_arquivo)} para separar arquivos lidos de um TXT.
+    \item \textbf{Estruturação:} Percorra as linhas e verifique se o arquivo possui extensão lendo a posição após o último ponto.
+    \item \textbf{Saída:} A função retornará 2 elementos. (1) Uma lista com os nomes de arquivos que não possuem extensões. (2) Um dicionário que tem a \textbf{extensão} como chave, contendo listas com os \textbf{nomes dos respectivos arquivos} como valores. 
+\end{itemize}
+\end{exercicio}
+
+
+\subsection*{Exercício 2.8 -- Prepend}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Aplicar orientação a objetos (OO) ao criar a classe \texttt{Prepend}.
+    \item \textbf{Inicialização:} A classe deve ter um inicializador \texttt{\_\_init\_\_} que armazene no escopo \texttt{self} a string inicializadora.
+    \item \textbf{Método:} A classe deve ter o método de instância \texttt{write(s)}, que fará o \texttt{print} unindo o atributo interno \texttt{self.start} mais o parâmetro \texttt{s}.
+\end{itemize}
+\end{exercicio}
+
+
+\subsection*{Exercício 2.9 -- Números racionais}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Construir e sobrecarregar de métodos a classe matemática \texttt{Rational} para suportar o formato fracionário real.
+    \item \textbf{Matemática:} O racional é inicializado recebendo o numerador e denominador. Devem ser sempre salvos em sua fração mais simplificada possível (use o método nativo de Máximo Divisor Comum \texttt{math.gcd}).
+    \item \textbf{Sobrecarga de Métodos Dunder:} A classe deve sobreescrever os operadores básicos:  \texttt{\_\_add\_\_} (+), \texttt{\_\_sub\_\_} (-), \texttt{\_\_mul\_\_} (*), \texttt{\_\_truediv\_\_} (/). 
+    \item \textbf{Sobrecarga Lógica:} Também deve sobreescrever os comparadores (\texttt{\_\_eq\_\_}, \texttt{\_\_gt\_\_}, \texttt{\_\_lt\_\_}).
+\end{itemize}
+\end{exercicio}
+
+
+\subsection*{Exercício 2.10 -- Extrair números}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Implementar \texttt{extract\_numbers(s)} que retira os dados numéricos (salvos em texto misturados à palavras) em seus respectivos tipos reais. 
+    \item \textbf{Processo Dúplice:} Tente usar o \textit{casting} \texttt{int()} sob as partições do texto (usando \texttt{try}). Se der erro (\texttt{except}), crie outra tentativa para convertê-la para o formato \texttt{float()}. Caso caia no segundo \texttt{except}, é porque é uma letra/palavra irrelevante, então ignore-a.
+    \item \textbf{Retorno:} Uma lista preenchida apenas com Inteiros e Floats matematicamente corretos extraídos da string de base.
+\end{itemize}
+\end{exercicio}
+
+\end{document}

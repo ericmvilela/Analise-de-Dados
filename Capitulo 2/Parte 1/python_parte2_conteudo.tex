@@ -1,0 +1,1011 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 2: Python\\\large Conteúdo Teórico}
+\author{Tradução e Adaptação: Universidade de Helsinque (MOOC.fi)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}.
+
+\begin{objetivos}
+\begin{itemize}
+\item Compreender o funcionamento das expressões regulares em Python.
+\item Aprender a processar arquivos em Python.
+\item Entender os conceitos de objetos e classes.
+\item Saber tratar exceções em um programa Python.
+\end{itemize}
+\end{objetivos}
+
+\tableofcontents
+\newpage
+
+\section{Expressões regulares}
+
+Já vimos que é possível perguntar a uma string \texttt{str} se ela começa
+com um determinado prefixo usando \texttt{str.startswith('Apple')}. Se
+quiséssemos verificar se ela começa com \texttt{"Apple"} \emph{ou}
+\texttt{"apple"}, teríamos que chamar o método duas vezes. As expressões
+regulares oferecem uma forma mais simples de resolver isso:
+\texttt{re.match(r"[Aa]pple", str)}. A notação entre colchetes é um
+exemplo da sintaxe especial das expressões regulares: ela indica que
+qualquer um dos caracteres dentro dos colchetes é aceito -- neste caso,
+\texttt{"A"} ou \texttt{"a"}. O restante dos caracteres em \texttt{"pple"}
+funciona normalmente. A string \texttt{r"[Aa]pple"} é chamada de
+\emph{padrão} (pattern).
+
+Um exemplo um pouco mais elaborado verifica se a string começa com
+\texttt{apple} ou \texttt{banana} (independentemente de maiúsculas ou
+minúsculas na primeira letra):
+\texttt{re.match(r"[Aa]pple|[Bb]anana", str)}. Aqui aparece um novo
+caractere especial, a barra vertical \texttt{|}, que representa uma
+alternativa. De cada lado da barra temos um subpadrão.
+
+Um nome de variável válido em Python começa com uma letra ou um
+sublinhado, e os caracteres seguintes também podem ser dígitos. Assim,
+\texttt{\_oculto}, \texttt{L\_valor} e \texttt{A123\_} são nomes válidos,
+mas \texttt{2abc} não é. O padrão de expressão regular para reconhecer
+nomes de variáveis válidos seria:
+\texttt{r"[A-Za-z\_][A-Za-z\_0-9]*\textbackslash Z"}. Aqui usamos uma
+abreviação para intervalos de caracteres: \texttt{A-Z} significa todos os
+caracteres de \texttt{A} até \texttt{Z}.
+
+O primeiro caractere do nome é definido no primeiro par de colchetes; os
+caracteres seguintes, no segundo par. O caractere especial \texttt{*}
+significa ``qualquer quantidade (0, 1, 2, \dots) do subpadrão anterior''.
+Por exemplo, o padrão \texttt{r"ba*"} aceita as strings \texttt{"b"},
+\texttt{"ba"}, \texttt{"baa"}, \texttt{"baaa"} e assim por diante. A
+notação especial \texttt{\textbackslash Z} indica o fim da string. Sem
+ela, uma string como \texttt{abc-} também seria aceita, pois a função
+\texttt{match} normalmente verifica apenas se a string \emph{começa} com
+o padrão.
+
+As notações especiais, como \texttt{\textbackslash Z}, podem gerar
+confusão, já que os literais de string em Python também usam notações
+parecidas: \texttt{\textbackslash n} representa uma quebra de linha,
+\texttt{\textbackslash t} representa uma tabulação, e assim por diante.
+Isso é resolvido usando as chamadas \emph{raw strings} (strings
+``cruas''), indicadas por um \texttt{r} antes das aspas, por exemplo
+\texttt{r"ab*\textbackslash Z"}. Em uma raw string, notações como
+\texttt{\textbackslash n} e \texttt{\textbackslash t} não são
+interpretadas. \textbf{É recomendável sempre usar raw strings ao definir
+padrões de expressões regulares!}
+
+\subsection{Padrões}
+
+Um padrão representa um conjunto de strings -- potencialmente infinito --
+que compartilham alguma característica em comum. Expressões regulares
+(RE) são um tópico clássico da ciência da computação e são muito comuns
+em tarefas de programação. Linguagens de script, como Python, lidam muito
+bem com expressões regulares, permitindo processar textos de forma bem
+sofisticada.
+
+Em um padrão, caracteres normais (letras, números) representam a si
+mesmos, a menos que sejam precedidos por uma barra invertida, o que pode
+ativar um significado especial. Sinais de pontuação têm significado
+especial, a não ser que sejam precedidos por \texttt{\textbackslash}, o
+que remove esse significado especial. Use \texttt{\textbackslash
+\textbackslash} para representar uma barra invertida literal.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Símbolo} & \textbf{Significado} \\
+\midrule
+\texttt{.} & Casa com qualquer caractere \\
+\texttt{[...]} & Casa com qualquer caractere presente dentro dos colchetes \\
+\texttt{[\^{}...]} & Casa com qualquer caractere que \emph{não} apareça após o acento circunflexo \\
+\texttt{\^{}} & Casa com o início da string \\
+\texttt{\$} & Casa com o final da string \\
+\texttt{*} & Casa com zero ou mais ocorrências da RE anterior \\
+\texttt{+} & Casa com uma ou mais ocorrências da RE anterior \\
+\texttt{\{m,n\}} & Casa de m a n ocorrências da RE anterior \\
+\texttt{?} & Casa com zero ou uma ocorrência da RE anterior \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Já vimos que o caractere \texttt{|} denota alternativas. Por exemplo, o
+padrão \texttt{r"Get (on|off|ready)"} casa com as strings
+\texttt{"Get on"}, \texttt{"Get off"} e \texttt{"Get ready"}. Parênteses
+podem ser usados para criar agrupamentos dentro de um padrão:
+\texttt{r"(ab)+"} casa com \texttt{"ab"}, \texttt{"abab"},
+\texttt{"ababab"}, etc. Esses grupos recebem também um número de
+referência, a partir de 1, e podem ser referenciados dentro do próprio
+padrão por meio de \emph{retro-referências} (\texttt{\textbackslash
+número}). Por exemplo, podemos localizar padrões repetidos separados por
+espaço com \texttt{r"([a-z]\{3,\}) \textbackslash 1 \textbackslash 1"}, o
+que reconhece strings como \texttt{"aca aca aca"} ou
+\texttt{"turn turn turn"}, mas não \texttt{"aca aba aca"} nem
+\texttt{"ac ac ac"}.
+
+Um acento circunflexo como primeiro caractere dentro de colchetes cria o
+\emph{conjunto complementar} de caracteres:
+
+\begin{center}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Símbolo} & \textbf{Significado} \\
+\midrule
+\texttt{\textbackslash d} & equivalente a \texttt{[0-9]}, casa com um dígito \\
+\texttt{\textbackslash D} & equivalente a \texttt{[\^{}0-9]}, casa com qualquer coisa exceto um dígito \\
+\texttt{\textbackslash s} & casa com um caractere de espaço em branco (espaço, quebra de linha, tabulação, \dots) \\
+\texttt{\textbackslash S} & casa com um caractere que não é espaço em branco \\
+\texttt{\textbackslash w} & equivalente a \texttt{[a-zA-Z0-9\_]}, casa com um caractere alfanumérico \\
+\texttt{\textbackslash W} & casa com um caractere não alfanumérico \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Com essa notação, o exemplo de nome de variável pode ser reescrito de
+forma mais curta como \texttt{r'[a-zA-Z\_]\textbackslash w*\textbackslash
+Z'}.
+
+Os padrões \texttt{\textbackslash A}, \texttt{\textbackslash b},
+\texttt{\textbackslash B} e \texttt{\textbackslash Z} casam todos com uma
+string vazia, mas em posições específicas. \texttt{\textbackslash A} e
+\texttt{\textbackslash Z} reconhecem, respectivamente, o início e o fim
+da string inteira -- diferentemente de \texttt{\^{}} e \texttt{\$}, que em
+certos modos também podem casar após ou antes de uma quebra de linha. O
+padrão \texttt{\textbackslash b} casa com o início ou o fim de uma
+palavra; \texttt{\textbackslash B} faz o oposto.
+
+\subsection{Funções de busca}
+
+Até agora usamos apenas a função \texttt{re.match}, que tenta encontrar
+uma correspondência no \emph{início} da string. A função \texttt{re.search}
+permite localizar a correspondência em qualquer parte da string. Por
+exemplo, \texttt{re.search(r'\textbackslash bback\textbackslash b', s)}
+casa com \texttt{"back"}, \texttt{"a back, is a body part"} e
+\texttt{"get back"}, mas não com \texttt{"backspace"} ou
+\texttt{"comeback"}.
+
+A função \texttt{re.search} encontra apenas a primeira ocorrência.
+Podemos usar \texttt{re.findall} para encontrar todas as ocorrências.
+Suponha que queremos encontrar todos os gerúndios (palavras terminadas em
+\texttt{'ing'}) em uma string \texttt{s}:
+
+\begin{lstlisting}
+import re
+s = "Doing things, going home, staying awake, sleeping later"
+re.findall(r'\w+ing\b', s)
+# ['Doing', 'going', 'staying', 'sleeping']
+\end{lstlisting}
+
+Para capturar todos os números inteiros de uma string, podemos usar
+\texttt{re.findall(r'[+-]?\textbackslash d+', s)}:
+
+\begin{lstlisting}
+re.findall(r'[+-]?\d+', "23 + -24 = -1")
+# ['23', '-24', '-1']
+\end{lstlisting}
+
+\subsubsection{Casamento guloso e não guloso}
+
+Suponha que temos frases do tipo ``se \dots, então \dots'' e queremos
+extrair apenas a condição. Uma primeira tentativa,
+\texttt{re.findall(r'[Ii]f (.*), then', s)}, tende a capturar texto
+demais, pois o padrão \texttt{.*} tenta casar o máximo possível de
+caracteres -- esse comportamento é chamado de \emph{casamento guloso}
+(\emph{greedy matching}).
+
+Uma forma de resolver isso é impedir que o ponto final seja incluído no
+trecho capturado, usando uma classe de caracteres complementar:
+\texttt{[\^{}.]}, resultando em
+\texttt{re.findall(r'[Ii]f ([\^{}.]*), then', s)}.
+
+Outra solução é usar o \emph{casamento não guloso}. Os quantificadores
+\texttt{+}, \texttt{*}, \texttt{?} e \texttt{\{m,n\}} possuem versões não
+gulosas: \texttt{+?}, \texttt{*?}, \texttt{??} e \texttt{\{m,n\}?}. Essas
+versões tentam usar o \emph{mínimo} de caracteres possível para que todo
+o padrão ainda case com algum trecho da string:
+
+\begin{lstlisting}
+re.findall(r'[Ii]f (.*?), then', s)
+\end{lstlisting}
+
+\subsection{Funções do módulo \texttt{re}}
+
+As funções mais comuns do módulo \texttt{re} são:
+
+\begin{itemize}
+\item \texttt{re.match(padrao, str)}
+\item \texttt{re.search(padrao, str)}
+\item \texttt{re.findall(padrao, str)}
+\item \texttt{re.finditer(padrao, str)}
+\item \texttt{re.sub(padrao, substituicao, str, count=0)}
+\end{itemize}
+
+As funções \texttt{match} e \texttt{search} retornam um \emph{objeto de
+correspondência} (\emph{match object}), que descreve a ocorrência
+encontrada. A função \texttt{findall} retorna uma lista com todas as
+ocorrências (como strings). A função \texttt{finditer} funciona como
+\texttt{findall}, mas retorna um iterador cujos itens são objetos de
+correspondência. A função \texttt{sub} substitui todas as ocorrências do
+padrão em \texttt{str} pela string de substituição e retorna a nova
+string.
+
+\begin{lstlisting}
+import re
+frase = "She goes where she wants to, she's a sheriff."
+nova_frase = re.sub(r'\b[Ss]he\b', 'he', frase)
+print(nova_frase)
+# he goes where he wants to, he's a sheriff.
+\end{lstlisting}
+
+A função \texttt{sub} também aceita retro-referências para se referir ao
+texto casado. As retro-referências \texttt{\textbackslash 1},
+\texttt{\textbackslash 2} etc. referem-se, em ordem, aos grupos do
+padrão:
+
+\begin{lstlisting}
+import re
+texto = """He is a timelord.
+He has a Tardis."""
+novo_texto = re.sub(r'(\b[Hh]e\b)', r'\1 (The Doctor)', texto, 1)
+print(novo_texto)
+# He (The Doctor) is a timelord.
+# He has a Tardis.
+\end{lstlisting}
+
+\subsection{O objeto de correspondência (\emph{match object})}
+
+As funções \texttt{match}, \texttt{search} e \texttt{finditer} usam
+objetos de correspondência para descrever a ocorrência encontrada. O
+método \texttt{groups()} de um objeto de correspondência retorna uma
+tupla com todas as substrings casadas pelos grupos do padrão. Cada par de
+parênteses no padrão cria um novo grupo, referenciado pelos índices 1, 2,
+\dots{} O grupo 0 é especial: representa o casamento produzido pelo
+padrão inteiro.
+
+\begin{lstlisting}
+mo = re.search(r'\d+ (\d+) \d+ (\d+)', 'first 123 45 67 890 last')
+mo.groups()   # ('45', '890')
+mo.group(1)   # '45'
+mo.group(0)   # '123 45 67 890'
+\end{lstlisting}
+
+Além de acessar as strings casadas pelo padrão e seus grupos, também é
+possível obter os índices correspondentes na string original:
+
+\begin{itemize}
+\item \texttt{start(gid=0)} e \texttt{end(gid=0)} retornam, respectivamente, os índices de início e fim do grupo \texttt{gid};
+\item \texttt{span(gid)} retorna o par (início, fim).
+\end{itemize}
+
+O objeto de correspondência também pode ser usado como um valor booleano:
+
+\begin{lstlisting}
+mo = re.search(...)
+if mo:
+    # faca algo
+\end{lstlisting}
+
+Ou, de forma explícita, \texttt{encontrado = bool(mo)}.
+
+\subsection{Outras informações úteis}
+
+Quando o mesmo padrão é usado em várias chamadas, pode ser interessante
+\emph{pré-compilá-lo} por questões de eficiência, usando a função
+\texttt{compile(padrao, flags=0)} do módulo \texttt{re}. Essa função
+retorna um chamado \emph{objeto RE}, que possui versões dos métodos do
+módulo \texttt{re}, com a diferença de que o padrão já está armazenado no
+objeto (não é mais o primeiro parâmetro).
+
+Detalhes do casamento podem ser ajustados por \emph{flags} opcionais,
+fornecidas dentro do próprio padrão ou como segundo parâmetro da função
+\texttt{compile}:
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Notação no padrão} & \textbf{Flag} \\
+\midrule
+\texttt{(?i)} & \texttt{re.IGNORECASE} \\
+\texttt{(?m)} & \texttt{re.MULTILINE} \\
+\texttt{(?s)} & \texttt{re.DOTALL} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+A flag \texttt{IGNORECASE} faz com que letras maiúsculas e minúsculas
+sejam tratadas como equivalentes. A flag \texttt{MULTILINE} faz com que
+\texttt{\^{}} e \texttt{\$} casem com o início e o fim de \emph{cada
+linha}, além do início e fim da string inteira -- isso é o que diferencia
+\texttt{\textbackslash A} de \texttt{\^{}}, e \texttt{\textbackslash Z} de
+\texttt{\$}. A flag \texttt{DOTALL} faz com que o ponto (\texttt{.})
+também aceite o caractere de quebra de linha. Múltiplas flags podem ser
+combinadas com \texttt{|}: \texttt{re.compile(padrao, re.MULTILINE |
+re.DOTALL)}.
+
+\section{Processamento básico de arquivos}
+
+Um arquivo pode ser aberto com a função \texttt{open}. A chamada
+\texttt{open(nome\_do\_arquivo, mode="r")} retorna um objeto de arquivo,
+usado para referenciar um arquivo em disco. Para ler ou escrever, usamos
+os métodos \texttt{read} e \texttt{write} desse objeto. Ao terminar de
+usá-lo, deve-se chamar o método \texttt{close}.
+
+O parâmetro \texttt{mode} controla que tipo de operação pode ser feita no
+arquivo:
+
+\begin{center}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Modo} & \textbf{Descrição} \\
+\midrule
+\texttt{r} & somente leitura; o arquivo precisa existir \\
+\texttt{w} & somente escrita; cria o arquivo, ou sobrescreve se já existir \\
+\texttt{a} & somente escrita; a escrita sempre ocorre no final do arquivo (append) \\
+\texttt{r+} & leitura e escrita; o arquivo precisa existir \\
+\texttt{w+} & leitura e escrita; cria, ou sobrescreve se já existir \\
+\texttt{a+} & leitura e escrita; a escrita ocorre no final do arquivo \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Ao final da string de modo, pode-se acrescentar a letra \texttt{t} (modo
+texto) ou \texttt{b} (modo binário); se omitida, o padrão é o modo texto.
+
+No modo binário, o conteúdo do arquivo não é interpretado de forma
+alguma: os métodos \texttt{read} e \texttt{write} lidam com \emph{bytes}
+(um byte tem 8 bits e pode representar um número entre 0 e 255).
+
+No modo texto, duas conversões ocorrem automaticamente:
+
+\begin{itemize}
+\item No Windows, o fim de linha é codificado por dois caracteres; ao ler
+  o arquivo, esses dois caracteres são convertidos para \texttt{'\textbackslash
+  n'}, e o processo inverso ocorre ao escrever.
+\item Cada caractere é codificado no arquivo como um ou mais bytes. Uma
+  codificação muito usada é a UTF-8. Nessa codificação, por exemplo, o
+  caractere \texttt{'ã'} é representado por dois bytes.
+\end{itemize}
+
+Neste curso trabalharemos apenas com arquivos de texto, então o modo
+texto padrão é suficiente. Ainda assim, às vezes é necessário especificar
+explicitamente a codificação de um arquivo, caso não seja UTF-8.
+
+\subsection{Métodos comuns do objeto de arquivo}
+
+\begin{itemize}
+\item \texttt{read(tamanho)}: lê \texttt{tamanho} caracteres/bytes como string.
+\item \texttt{write(string)}: escreve uma string/bytes no arquivo.
+\item \texttt{readline()}: lê uma linha, incluindo o caractere de quebra de linha final.
+\item \texttt{readlines()}: retorna uma lista com todas as linhas do arquivo.
+\item \texttt{writelines()}: escreve uma lista de linhas no arquivo.
+\item \texttt{flush()}: tenta garantir que as alterações sejam gravadas em disco imediatamente.
+\end{itemize}
+
+\begin{lstlisting}
+f = open("caderno.ipynb", "r")   # abre um arquivo de texto
+for i in range(5):               # le as cinco primeiras linhas
+    linha = f.readline()
+    print(f"Linha {i}: {linha}", end="")
+f.close()
+\end{lstlisting}
+
+É fácil esquecer de fechar um arquivo. Uma solução é usar um
+\emph{gerenciador de contexto}, criado com a instrução \texttt{with}: ao
+sair do bloco indentado, o arquivo é fechado automaticamente.
+
+\begin{lstlisting}
+with open("caderno.ipynb", "r") as f:   # o arquivo sera fechado
+    for i in range(5):                  # automaticamente ao sair do bloco
+        linha = f.readline()
+        print(f"Linha {i}: {linha}", end="")
+\end{lstlisting}
+
+O objeto de arquivo é iterável, ou seja, podemos percorrer as linhas do
+arquivo usando um laço \texttt{for}:
+
+\begin{lstlisting}
+maior_tamanho = 0
+with open("caderno.ipynb", "r") as f:
+    for linha in f:                     # percorre todas as linhas do arquivo
+        if len(linha) > maior_tamanho:
+            maior_tamanho = len(linha)
+print(f"A maior linha deste arquivo tem tamanho {maior_tamanho}")
+\end{lstlisting}
+
+\subsection{Objetos padrão de entrada e saída}
+
+O Python mantém três objetos de arquivo automaticamente abertos:
+
+\begin{itemize}
+\item \texttt{sys.stdin} -- entrada padrão;
+\item \texttt{sys.stdout} -- saída padrão;
+\item \texttt{sys.stderr} -- saída padrão de erro.
+\end{itemize}
+
+Para ler uma linha digitada pelo usuário, usa-se
+\texttt{sys.stdin.readline()}. Para escrever uma linha na tela, usa-se
+\texttt{sys.stdout.write(linha)}. A saída de erro deve ser usada apenas
+para mensagens de erro, ainda que, muitas vezes, seu destino final seja o
+mesmo da saída padrão.
+
+A função \texttt{print} usa o arquivo \texttt{sys.stdout}, e a função
+\texttt{input} usa o arquivo \texttt{sys.stdin}. Esses objetos podem ter
+seu destino redirecionado -- é comum, por exemplo, redirecionar
+\texttt{stderr} para um arquivo de log.
+
+\subsection{O módulo \texttt{sys}}
+
+Além dos três objetos de arquivo padrão, o módulo \texttt{sys} tem outros
+atributos úteis. \texttt{sys.path} é a lista de pastas em que o Python
+procura por módulos a serem importados. \texttt{sys.argv} contém os
+chamados \emph{parâmetros de linha de comando}: ao executar
+\texttt{python3 programa.py param1 param2 \dots} no terminal, o nome do
+programa fica em \texttt{sys.argv[0]}, e os demais parâmetros ficam nas
+posições seguintes da lista.
+
+A função \texttt{sys.exit} pode ser usada para encerrar imediatamente o
+programa. O parâmetro inteiro fornecido é o valor de retorno do programa
+-- por convenção, \texttt{0} indica sucesso, e qualquer valor diferente
+de zero indica que ocorreu um erro.
+
+\section{Objetos e classes}
+
+Python é uma linguagem orientada a objetos, como Java e C++, mas,
+diferentemente de Java, não obriga o uso de classes, herança e métodos:
+também é possível programar de forma estrutural, com funções e módulos.
+
+Todo valor em Python é um objeto. Objetos combinam dados e as funções que
+manipulam esses dados -- essa combinação é chamada de
+\emph{encapsulamento}. Os itens de dados e as funções de um objeto são
+chamados de \emph{atributos}; em particular, os atributos que são funções
+são chamados de \emph{métodos}. Por exemplo, o operador \texttt{+} em
+números inteiros invoca um método dos inteiros, e o operador \texttt{+}
+em strings invoca um método das strings.
+
+Funções, módulos, métodos, classes etc. são todos \emph{objetos de
+primeira classe} em Python, ou seja, podem ser:
+
+\begin{itemize}
+\item armazenados em um contêiner;
+\item passados como parâmetro para uma função;
+\item retornados por uma função;
+\item associados a uma variável.
+\end{itemize}
+
+Acessamos um atributo de um objeto usando o \emph{operador ponto}:
+\texttt{objeto.atributo}. Por exemplo, se \texttt{L} é uma lista,
+referenciamos o método \texttt{append} com \texttt{L.append}, e podemos
+chamá-lo assim: \texttt{L.append(4)}. Como módulos também são objetos em
+Python, a expressão \texttt{math.pi} nada mais é do que o acesso ao
+atributo de dado \texttt{pi} do objeto módulo \texttt{math}.
+
+Números como \texttt{2} e \texttt{100} são instâncias do tipo
+\texttt{int}. Da mesma forma, \texttt{"ola"} é uma instância do tipo
+\texttt{str}. Quando escrevemos \texttt{s = set()}, estamos, na verdade,
+criando uma nova instância do tipo \texttt{set} e associando esse objeto
+à variável \texttt{s}.
+
+O usuário pode definir seus próprios tipos de dado -- as chamadas
+\emph{classes}. Ao chamar uma classe como se fosse uma função, obtemos um
+novo objeto \emph{instância} desse tipo. Classes podem ser vistas como
+``receitas'' para criar objetos.
+
+\begin{lstlisting}
+class MinhaClasse(object):
+    """String de documentacao da classe"""
+
+    def __init__(self, param1, param2):
+        "Inicializa uma instancia de MinhaClasse"
+        self.b = param1     # cria um atributo de instancia
+        c = param2           # cria uma variavel local da funcao
+        # demais instrucoes ...
+
+    def f(self, param1):
+        """Este e um metodo da classe"""
+        # algumas instrucoes
+
+    a = 1   # isto cria um atributo de classe
+\end{lstlisting}
+
+A definição de classe começa com a palavra-chave \texttt{class}. Nela
+damos um nome ao novo tipo e, entre parênteses, listamos as classes-base.
+O bloco indentado seguinte é o \emph{corpo da classe}. Depois de todo o
+corpo ser lido, um novo tipo é criado -- note que nenhuma instância é
+criada ainda. Todos os atributos e métodos da classe são definidos no
+corpo da classe.
+
+A classe do exemplo tem dois métodos: \texttt{\_\_init\_\_} e \texttt{f}.
+O primeiro parâmetro deles é especial: \texttt{self} refere-se à
+instância da classe sobre a qual o método está sendo chamado. Por
+exemplo, se criarmos \texttt{a = MinhaClasse(...)}, então, na chamada
+\texttt{a.f(param1)}, \texttt{self} representa \texttt{a}. O conceito de
+\texttt{self} é equivalente ao de \texttt{this} em C++ ou Java.
+
+O método \texttt{\_\_init\_\_} realiza a inicialização quando uma
+instância é criada. Ao instanciar com \texttt{i = MinhaClasse(2,3)}, os
+parâmetros \texttt{param1} e \texttt{param2} recebem os valores 2 e 3,
+respectivamente. Com a instância \texttt{i} criada, podemos chamar seu
+método \texttt{f} com o operador ponto: \texttt{i.f(1)}.
+
+Há diferenças em como uma atribuição dentro do corpo da classe cria
+variáveis. O atributo \texttt{a} é definido no nível da classe e é comum
+a todas as instâncias de \texttt{MinhaClasse}. A variável \texttt{c} é
+local à função \texttt{\_\_init\_\_} e não pode ser usada fora dela. Já o
+atributo \texttt{b} é específico de cada instância. Assim, para objetos
+\texttt{x = MinhaClasse(1,0)} e \texttt{y = MinhaClasse(2,0)}, temos
+\texttt{x.b != y.b}, mas \texttt{x.a == y.a}.
+
+Todo método de uma classe recebe obrigatoriamente um primeiro parâmetro
+que se refere à instância na qual o método foi chamado, chamado
+convencionalmente de \texttt{self}. Para acessar um atributo de classe a
+partir de um método, use a forma completa \texttt{MinhaClasse.a}. Métodos
+cujo nome começa e termina com dois sublinhados são chamados de
+\emph{métodos especiais}; \texttt{\_\_init\_\_} é um deles.
+
+\subsection{Instâncias}
+
+Criamos instâncias chamando uma classe como se fosse uma função:
+\texttt{i = NomeDaClasse(...)}. Os parâmetros fornecidos na chamada são
+passados para a função \texttt{\_\_init\_\_}, onde os atributos
+específicos da instância podem ser criados. Se \texttt{\_\_init\_\_}
+estiver ausente, é possível criar uma instância sem fornecer nenhum
+parâmetro -- nesse caso, ela não terá atributos. Mais tarde, é possível
+(re)associar atributos com a atribuição \texttt{instancia.atributo =
+novo\_valor}.
+
+Se o atributo não existia antes, ele é adicionado à instância com o valor
+atribuído. Em Python é realmente possível adicionar ou remover atributos
+de uma instância já existente, porque os nomes dos atributos e seus
+respectivos valores são armazenados em um dicionário, que é, ele mesmo,
+um atributo da instância chamado \texttt{\_\_dict\_\_}. Outro atributo
+padrão, além de \texttt{\_\_dict\_\_}, é \texttt{\_\_class\_\_}, que
+armazena a classe da instância -- ou seja, o tipo do objeto.
+
+\subsection{Busca de atributos}
+
+Suponha que \texttt{x} é uma instância da classe \texttt{X}, e queremos
+ler um atributo \texttt{x.a}. A busca ocorre em três etapas:
+
+\begin{enumerate}
+\item verifica-se primeiro se \texttt{a} é um atributo da instância \texttt{x};
+\item caso não seja, verifica-se se \texttt{a} é um atributo de classe de \texttt{X};
+\item caso ainda não seja, as classes-base de \texttt{X} são verificadas.
+\end{enumerate}
+
+Já para \emph{associar} um atributo, as regras são mais simples:
+\texttt{x.a = valor} define o atributo de instância, e \texttt{X.a =
+valor} define o atributo de classe. Se uma classe-base, a própria classe
+\texttt{X} e a instância \texttt{x} tiverem, cada uma, um atributo chamado
+\texttt{a}, então \texttt{x.a} esconde \texttt{X.a}, que por sua vez
+esconde o atributo da classe-base.
+
+\subsection{Herança}
+
+A herança nos permite reaproveitar o código de uma classe já existente
+\texttt{B} na criação de uma nova classe \texttt{C}. Relembrando: ao
+procurar um atributo, a busca começa no dicionário da instância e
+continua pelos atributos de classe; se ambos falharem, o atributo é
+buscado nas classes-base e, recursivamente, nas classes-base delas.
+
+Assim, pode parecer que estamos acessando um atributo da classe
+\texttt{C}, quando na verdade estamos acessando um atributo herdado de
+sua classe-base \texttt{B}. Nesse caso, dizemos que \texttt{C}
+\emph{herda} o atributo de sua classe-base \texttt{B}. Se houver
+atributos com o mesmo nome tanto na classe quanto na sua classe-base, o
+atributo da classe-base fica oculto -- dizemos que a classe \texttt{C}
+\emph{sobrescreve} (\emph{override}) o atributo da classe-base
+\texttt{B}. Terminologia: \texttt{B} é a classe-base (superclasse) e
+\texttt{C} é a classe derivada (subclasse).
+
+\begin{lstlisting}
+class B(object):
+    def f(self):
+        print("Executando B.f")
+    def g(self):
+        print("Executando B.g")
+
+class C(B):
+    def g(self):
+        print("Executando C.g")
+
+x = C()
+x.f()   # herdado de B
+x.g()   # sobrescrito por C
+# Saida:
+# Executando B.f
+# Executando C.g
+\end{lstlisting}
+
+A relação de herança entre duas classes \texttt{B} e \texttt{C} pode ser
+testada com a função \texttt{issubclass}:
+\texttt{issubclass(C, B) == True}, mas \texttt{issubclass(B, C) ==
+False}. A função \texttt{isinstance(obj, cls)} permite verificar se uma
+instância tem tipo \texttt{cls} ou algum ancestral do tipo \texttt{cls}.
+Criando \texttt{x = C()} e \texttt{y = B()}, temos
+\texttt{isinstance(x, B) == isinstance(x, C) == isinstance(y, B) ==
+True}, mas \texttt{isinstance(y, C) == False}.
+
+A classe \texttt{object} deve ser uma classe-base ou ancestral de toda
+classe em Python: para toda instância \texttt{x},
+\texttt{isinstance(x, object) == True}.
+
+Ao derivar de uma classe existente, podemos modificar e/ou estender seu
+comportamento sem alterar a classe original. Por exemplo, se quisermos
+adicionar um método à classe \texttt{list}, podemos usar herança e
+codificar apenas a parte que muda. Outro uso da herança é criar
+hierarquias conceituais -- como veremos na hierarquia de exceções do
+Python. Um terceiro uso é criar interfaces: várias classes podem
+compartilhar a mesma interface (isto é, oferecer os mesmos atributos),
+mas ter comportamentos ou implementações muito diferentes, o que permite
+trocar parte do programa com mínimas alterações no restante do código.
+
+Se, na definição de um método \texttt{C.f}, precisarmos chamar o método
+correspondente da classe-base \texttt{B}, podemos usar a chamada completa
+\texttt{B.f(...)}. Isso é chamado de \emph{delegação}, útil, por exemplo,
+para chamar o \texttt{\_\_init\_\_} da classe-base a partir do
+\texttt{\_\_init\_\_} da classe derivada, inicializando os atributos da
+classe-base.
+
+\subsection{Métodos especiais}
+
+Já conhecemos um método especial, o \texttt{\_\_init\_\_}, que define os
+valores iniciais dos atributos de instância. A seguir, apresentamos os
+principais métodos especiais de propósito geral, executados quando certas
+operações são realizadas sobre os objetos.
+
+Sendo \texttt{C} uma classe e \texttt{x}, \texttt{y} suas instâncias:
+\texttt{\_\_hash\_\_} retorna um valor inteiro, com o requisito de que
+\texttt{x == y} implica \texttt{x.\_\_hash\_\_() == y.\_\_hash\_\_()}. O
+valor é usado ao armazenar objetos em dicionários e conjuntos; as
+instâncias devem ser imutáveis. Uma classe com o método
+\texttt{\_\_call\_\_} torna suas instâncias ``chamáveis'': a chamada
+\texttt{x(a, b, \dots)} invocará esse método especial com os parâmetros
+fornecidos. O método \texttt{\_\_del\_\_} é chamado quando a instância
+correspondente é destruída. O método \texttt{\_\_new\_\_} controla a
+criação de novas instâncias, podendo ser usado, por exemplo, para criar
+classes que possuem apenas uma instância.
+
+O método \texttt{\_\_str\_\_} é chamado quando \texttt{print} precisa
+exibir o valor de uma instância -- deve retornar uma string. O método
+\texttt{\_\_repr\_\_} é chamado quando o interpretador interativo exibe o
+valor de uma expressão avaliada; retorna uma representação ``canônica'',
+que (ao menos em teoria) poderia ser usada para recriar o objeto
+original. Os métodos especiais \texttt{\_\_eq\_\_}, \texttt{\_\_ge\_\_},
+\texttt{\_\_gt\_\_}, \texttt{\_\_le\_\_}, \texttt{\_\_lt\_\_} e
+\texttt{\_\_ne\_\_} são chamados quando os operadores correspondentes
+\texttt{==}, \texttt{>=}, \texttt{>}, \texttt{<=}, \texttt{<} e
+\texttt{!=} são usados.
+
+Para que instâncias de uma classe suportem operações numéricas (\texttt{+},
+\texttt{-}, \texttt{*}, \texttt{/} etc.), é preciso definir os métodos
+especiais correspondentes. Por exemplo, a expressão \texttt{x + y}
+resulta na chamada \texttt{x.\_\_add\_\_(y)}, que deve retornar o
+resultado da operação.
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Método} & \textbf{Operação} \\
+\midrule
+\texttt{\_\_add\_\_} & adição (+) \\
+\texttt{\_\_sub\_\_} & subtração (-) \\
+\texttt{\_\_mul\_\_} & multiplicação (*) \\
+\texttt{\_\_truediv\_\_} & divisão (/) \\
+\texttt{\_\_floordiv\_\_} & divisão inteira (//) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+As atribuições compostas correspondentes (\texttt{+=}, \texttt{-=},
+\texttt{*=}, \texttt{/=}) usam os métodos especiais \texttt{\_\_iadd\_\_},
+\texttt{\_\_isub\_\_}, \texttt{\_\_imul\_\_} e \texttt{\_\_itruediv\_\_}.
+As funções de conversão \texttt{complex()}, \texttt{float()} e
+\texttt{int()} chamam, respectivamente, \texttt{\_\_complex\_\_},
+\texttt{\_\_float\_\_} e \texttt{\_\_int\_\_}.
+
+Além dos métodos habituais dos contêineres, como \texttt{append} de uma
+lista, várias operações são resolvidas por chamadas a métodos especiais
+da classe do contêiner. O teste de pertencimento \texttt{x in c}
+corresponde à chamada \texttt{c.\_\_contains\_\_(x)}. A exclusão de um
+elemento com \texttt{del c[chave]} corresponde a
+\texttt{c.\_\_delitem\_\_(chave)}. A leitura de um item com
+\texttt{c[chave]} corresponde a \texttt{c.\_\_getitem\_\_(chave)}, e a
+atribuição \texttt{c[chave] = valor} corresponde a
+\texttt{c.\_\_setitem\_\_(chave, valor)}. O número de elementos de um
+contêiner \texttt{c} é obtido com \texttt{len(c)}, que na verdade chama
+\texttt{c.\_\_len\_\_()}. A chamada \texttt{iter(c)} invoca o método
+especial \texttt{\_\_iter\_\_}.
+
+\section{Exceções}
+
+Quando ocorre um erro, o que podemos fazer?
+
+\begin{itemize}
+\item Exibir uma mensagem de erro;
+\item Interromper a execução do programa;
+\item Sinalizar o erro retornando um valor especial, como \texttt{-1} ou \texttt{None};
+\item Ignorar o erro;
+\item \dots
+\end{itemize}
+
+Essas soluções tendem a misturar a \emph{indicação} do problema com a
+\emph{reação} a esse problema. O comportamento do programa diante de uma
+situação de erro fica fixo na implementação da função, e a instância que
+chamou a função nem sempre sabe o que fazer diante da situação.
+
+A maioria das linguagens modernas possui um sistema chamado
+\emph{tratamento de exceções}, que separa o reconhecimento de erros do
+seu tratamento propriamente dito. Sinalizamos um erro ou situação
+anômala \emph{lançando} (\emph{raising}) uma exceção, o que em Python é
+feito com a instrução \texttt{raise}:
+
+\begin{itemize}
+\item \texttt{raise instancia}
+\item \texttt{raise classe\_de\_excecao[, expressao]}
+\end{itemize}
+
+Na segunda forma, se a expressão existir, ela é uma tupla de parâmetros
+passados para a classe de exceção.
+
+As funções da biblioteca padrão do Python lançam exceções em situações de
+erro. Às vezes, uma exceção nem representa exatamente um erro -- por
+exemplo, quando um iterador se esgota, ele sinaliza isso lançando a
+exceção \texttt{StopIteration}. Outro exemplo de exceção pouco ``grave''
+é \texttt{Warning}.
+
+A forma geral da instrução de captura de exceções é a seguinte:
+
+\begin{lstlisting}
+try:
+    # instrucoes que podem causar excecoes
+except (NomeExcecao1, NomeExcecao2, ...):
+    # tratamento das excecoes
+else:
+    # executado se o bloco try nao causou nenhuma excecao
+finally:
+    # sempre executado -- codigo de limpeza
+\end{lstlisting}
+
+Em geral, apenas as partes \texttt{try} e \texttt{except} são necessárias.
+
+\begin{lstlisting}
+L = [1, 2, 3]
+try:
+    print(L[3])
+except IndexError:
+    print("Este indice nao existe")
+# Saida: Este indice nao existe
+\end{lstlisting}
+
+\begin{lstlisting}
+def calcula_media(L):
+    n = len(L)
+    s = sum(L)
+    return float(s) / n   # o erro e detectado aqui!
+
+minha_lista = []
+while True:
+    try:
+        x = float(input("Digite um numero (nao numerico encerra): "))
+        minha_lista.append(x)
+    except ValueError:
+        break
+
+try:
+    media = calcula_media(minha_lista)
+    print("A media e", media)
+except ZeroDivisionError:
+    # e o erro e tratado aqui
+    if len(minha_lista) == 0:
+        print("Tentou calcular a media de uma lista vazia de numeros")
+    else:
+        print("Algo estranho aconteceu")
+\end{lstlisting}
+
+\subsection{A hierarquia de exceções}
+
+Em Python, exceções são objetos, como qualquer outro valor, instanciados
+a partir de classes de exceção. As classes de exceção formam hierarquias
+naturais:
+
+\begin{itemize}
+\item novas classes de exceção podem ser criadas herdando de classes de exceção já existentes e estendendo-as;
+\item a raiz dessa hierarquia é a classe \texttt{Exception};
+\item o Python define diversas classes-base para servir de ponto de partida, além de várias classes de exceção prontas para uso.
+\end{itemize}
+
+Algumas das classes mais comuns e seus relacionamentos:
+
+\begin{center}
+\small
+\begin{tabular}{ll}
+\toprule
+\textbf{Classe-base} & \textbf{Algumas classes derivadas} \\
+\midrule
+\texttt{Exception} & \texttt{SystemExit}, \texttt{StandardError}, \texttt{StopIteration}, \texttt{Warning} \\
+\texttt{StandardError} & \texttt{NameError}, \texttt{SyntaxError}, \texttt{ArithmeticError}, \texttt{LookupError}, \texttt{EnvironmentError}, \dots \\
+\texttt{ArithmeticError} & \texttt{FloatingPointError}, \texttt{OverflowError}, \texttt{ZeroDivisionError} \\
+\texttt{LookupError} & \texttt{IndexError}, \texttt{KeyError} \\
+\texttt{EnvironmentError} & \texttt{IOError}, \texttt{OSError} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Especificações de exceção genéricas demais}
+
+A hierarquia de exceções permite capturar múltiplas exceções semelhantes
+capturando sua classe-base comum. Esse recurso deve ser usado com
+cuidado: uma especificação de exceção genérica demais, como
+\texttt{except Exception:}, pode esconder a verdadeira causa de um erro.
+
+\begin{lstlisting}
+import sys
+s = input("Digite um numero: ")
+s = s[:-1]   # remove o caractere \n do final
+try:
+    x = int(s)
+    sys.stdout.write(f"Voce digitou {x}\n")
+except Exception:
+    print("Voce nao digitou um numero")
+\end{lstlisting}
+
+Se o usuário não digitar uma string que representa um inteiro, a função
+\texttt{int} lança \texttt{ValueError}. Em vez de capturar
+\texttt{ValueError} especificamente, capturamos a raiz da hierarquia,
+\texttt{Exception}, o que acaba capturando \emph{qualquer} exceção
+possível -- inclusive um eventual erro de digitação no próprio código,
+que passaria despercebido. Trocar a especificação de \texttt{Exception}
+para \texttt{ValueError} deixaria esse tipo de problema visível.
+
+\subsection{A política de tratamento de erros do Python}
+
+O Python usa uma abordagem diferente da de muitas outras linguagens no
+que diz respeito à checagem de erros. Em vez de verificar previamente se
+todas as entradas têm o tipo correto e se o conteúdo das variáveis faz
+sentido para determinada operação, o Python primeiro tenta executar a
+operação e depois verifica se ela causou alguma exceção. Isso está
+relacionado ao conceito de \emph{duck typing}: uma função funciona para
+um conjunto de entradas se todas as operações no corpo da função fizerem
+sentido para essas entradas. É por isso que os parâmetros das funções
+normalmente não têm um tipo especificado.
+
+\section{Sequências, iteráveis e geradores: revisão}
+
+Em termos simples, um contêiner é \emph{iterável} se pudermos percorrer
+todos os seus elementos usando um laço \texttt{for}. Todas as sequências
+são iteráveis, mas existem outros objetos iteráveis além delas -- e
+podemos até criar nossos próprios tipos iteráveis. Para isso, a classe
+precisa ter um método especial \texttt{\_\_iter\_\_}, que retorna um
+\emph{iterador} para o contêiner. Um iterador é um objeto que possui o
+método \texttt{\_\_next\_\_}, responsável por retornar o próximo elemento
+do contêiner.
+
+\begin{lstlisting}
+class IteradorDiaDaSemana(object):
+    """Iterador sobre os dias da semana."""
+
+    def __init__(self):
+        self.i = 0   # comeca na segunda-feira
+        self.dias = ("Segunda", "Terca", "Quarta", "Quinta",
+                     "Sexta", "Sabado", "Domingo")
+
+    def __iter__(self):
+        # se este objeto fosse um container, este metodo
+        # retornaria o iterador sobre os elementos do container.
+        # como este objeto ja e um iterador, retornamos self.
+        return self
+
+    def __next__(self):
+        if self.i == 7:
+            raise StopIteration   # sinaliza que todos os dias ja foram percorridos
+        else:
+            dia = self.dias[self.i]
+            self.i += 1
+            return dia
+
+for dia in IteradorDiaDaSemana():
+    print(dia)
+\end{lstlisting}
+
+Podemos verificar se \texttt{IteradorDiaDaSemana} é do tipo
+\texttt{Sequence}:
+
+\begin{lstlisting}
+from collections import abc   # obtem as classes-base abstratas
+
+containers = ["abc", [1, 2, 3], (4, 5), IteradorDiaDaSemana()]
+for c in containers:
+    if isinstance(c, abc.Sequence):
+        print(c, "e uma sequencia")
+    else:
+        print(c, "nao e uma sequencia")
+\end{lstlisting}
+
+O iterador não é uma sequência, pois, por exemplo, não é possível indexá-lo
+com colchetes (\texttt{[]}), mas ele é, sim, um iterável:
+\texttt{isinstance(IteradorDiaDaSemana(), abc.Iterable)} retorna
+\texttt{True}.
+
+É possível criar iteradores manualmente, mas a sintaxe fica um tanto
+complicada. Uma alternativa mais simples são os \emph{geradores}. Um
+gerador é uma função que contém uma instrução \texttt{yield}. Note a
+diferença entre geradores e expressões geradoras (vistas anteriormente no
+curso): ambos produzem iteráveis, mas de formas diferentes.
+
+\begin{lstlisting}
+def minhas_datas(dia=1, mes=1):
+    """Gera datas a partir da data informada."""
+    duracoes = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+    primeiro_dia = dia
+    for m in range(mes, 13):
+        for d in range(primeiro_dia, duracoes[m - 1] + 1):
+            yield (d, m)
+        primeiro_dia = 1
+
+# cria o gerador chamando a funcao:
+gen = minhas_datas(26, 2)   # comeca em 26 de fevereiro
+
+for i, (dia, mes) in enumerate(gen):
+    if i == 5:
+        break   # imprime apenas as cinco primeiras datas do gerador
+    print(f"Indice {i}, dia {dia}, mes {mes}")
+\end{lstlisting}
+
+Não seria possível escrever esse mesmo iterável usando uma expressão
+geradora, e seria bastante trabalhoso escrevê-lo explicitamente como um
+iterador, como fizemos com \texttt{IteradorDiaDaSemana}.
+
+\section*{Referências e créditos}
+\addcontentsline{toc}{section}{Referências e créditos}
+
+Este material é uma tradução e adaptação, para a língua portuguesa, do
+conteúdo do curso \emph{Data Analysis with Python 2024--2025}, Capítulo
+2 -- ``Python (Part 2)'', originalmente disponibilizado em inglês pela
+plataforma MOOC.fi:
+
+\begin{quote}
+\url{https://courses.mooc.fi/org/uh-cs/courses/data-analysis-with-python-2024-2025/chapter-2/python-continues}
+\end{quote}
+
+\end{document}

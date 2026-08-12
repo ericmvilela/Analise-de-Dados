@@ -1,0 +1,241 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{hyperref}
+\geometry{margin=2.3cm}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible,frame=single,showstringspaces=false}
+\title{Soluções dos exercícios\\Data Analysis with Python 2024--2025 -- Parte 1}
+\author{Soluções independentes baseadas nos enunciados do PDF fornecido}
+\date{2026}
+\begin{document}
+\maketitle
+\tableofcontents
+\section{Exercício 1.1 -- hello world}
+\begin{lstlisting}[language=Python]
+print("Hello, world!")
+\end{lstlisting}
+
+\section{Exercício 1.2 -- compliment}
+\begin{lstlisting}[language=Python]
+country = input("What country are you from? ")
+print(f"I have heard that {country} is a beautiful country.")
+\end{lstlisting}
+
+\section{Exercício 1.3 -- multiplication}
+\begin{lstlisting}[language=Python]
+for i in range(11):
+    print(f"4 multiplied by {i} is {4*i}")
+\end{lstlisting}
+
+\section{Exercício 1.4 -- multiplication table}
+\begin{lstlisting}[language=Python]
+for i in range(1, 11):
+    for j in range(1, 11):
+        print(f"{i*j:4}", end="")
+    print()
+\end{lstlisting}
+
+\section{Exercício 1.5 -- two dice}
+\begin{lstlisting}[language=Python]
+for a in range(1, 7):
+    for b in range(1, 7):
+        if a + b == 5:
+            print((a, b))
+\end{lstlisting}
+
+\section{Exercício 1.6 -- triple square}
+\begin{lstlisting}[language=Python]
+def triple(x):
+    return 3*x
+
+def square(x):
+    return x*x
+
+for i in range(1, 11):
+    if square(i) > triple(i):
+        break
+    print(f"triple({i})=={triple(i)} square({i})=={square(i)}")
+\end{lstlisting}
+
+\section{Exercício 1.7 -- areas of shapes}
+\begin{lstlisting}[language=Python]
+import math
+
+while True:
+    shape = input("Choose a shape (triangle, rectangle, circle): ")
+    if shape == "":
+        break
+
+    if shape == "triangle":
+        base = float(input("Give base of the triangle: "))
+        height = float(input("Give height of the triangle: "))
+        area = base * height / 2
+    elif shape == "rectangle":
+        width = float(input("Give width of the rectangle: "))
+        height = float(input("Give height of the rectangle: "))
+        area = width * height
+    elif shape == "circle":
+        radius = float(input("Give radius of the circle: "))
+        area = math.pi * radius * radius
+    else:
+        print("Unknown shape!")
+        continue
+
+    print(f"The area is {area:f}")
+\end{lstlisting}
+
+\section{Exercício 1.8 -- solve quadratic}
+\begin{lstlisting}[language=Python]
+from math import sqrt
+
+def solve_quadratic(a, b, c):
+    d = b*b - 4*a*c
+    return ((-b + sqrt(d)) / (2*a), (-b - sqrt(d)) / (2*a))
+\end{lstlisting}
+
+\section{Exercício 1.9 -- merge}
+\begin{lstlisting}[language=Python]
+def merge(L1, L2):
+    result = []
+    i = j = 0
+    while i < len(L1) and j < len(L2):
+        if L1[i] <= L2[j]:
+            result.append(L1[i])
+            i += 1
+        else:
+            result.append(L2[j])
+            j += 1
+    result.extend(L1[i:])
+    result.extend(L2[j:])
+    return result
+\end{lstlisting}
+
+\section{Exercício 1.10 -- detect ranges}
+\begin{lstlisting}[language=Python]
+def detect_ranges(L):
+    values = sorted(L)
+    result = []
+    i = 0
+    while i < len(values):
+        start = values[i]
+        end = start
+        while i + 1 < len(values) and values[i+1] == values[i] + 1:
+            i += 1
+            end = values[i]
+        if end > start:
+            result.append((start, end + 1))
+        else:
+            result.append(start)
+        i += 1
+    return result
+\end{lstlisting}
+
+\section{Exercício 1.11 -- interleave}
+\begin{lstlisting}[language=Python]
+def interleave(*lists):
+    result = []
+    for group in zip(*lists):
+        result.extend(group)
+    return result
+\end{lstlisting}
+
+\section{Exercício 1.12 -- distinct characters}
+\begin{lstlisting}[language=Python]
+def distinct_characters(L):
+    return {s: len(set(s)) for s in L}
+\end{lstlisting}
+
+\section{Exercício 1.13 -- reverse dictionary}
+\begin{lstlisting}[language=Python]
+def reverse_dictionary(d):
+    result = {}
+    for english, finnish_words in d.items():
+        for finnish in finnish_words:
+            result.setdefault(finnish, []).append(english)
+    return result
+\end{lstlisting}
+
+\section{Exercício 1.14 -- find matching}
+\begin{lstlisting}[language=Python]
+def find_matching(L, search):
+    return [i for i, value in enumerate(L) if search in value]
+\end{lstlisting}
+
+\section{Exercício 1.15 -- two dice comprehension}
+\begin{lstlisting}[language=Python]
+pairs = [(a, b) for a in range(1, 7) for b in range(1, 7) if a + b == 5]
+for pair in pairs:
+    print(pair)
+\end{lstlisting}
+
+\section{Exercício 1.16 -- transform}
+\begin{lstlisting}[language=Python]
+def transform(s1, s2):
+    a = map(int, s1.split())
+    b = map(int, s2.split())
+    return [x*y for x, y in zip(a, b)]
+\end{lstlisting}
+
+\section{Exercício 1.17 -- positive list}
+\begin{lstlisting}[language=Python]
+def positive_list(L):
+    return list(filter(lambda x: x > 0, L))
+\end{lstlisting}
+
+\section{Exercício 1.18 -- acronyms}
+\begin{lstlisting}[language=Python]
+import string
+
+def acronyms(text):
+    result = []
+    for word in text.split():
+        cleaned = word.strip(string.punctuation)
+        if len(cleaned) >= 2 and cleaned.isupper():
+            result.append(cleaned)
+    return result
+\end{lstlisting}
+
+\section{Exercício 1.19 -- sum equation}
+\begin{lstlisting}[language=Python]
+def sum_equation(L):
+    if not L:
+        return "0 = 0"
+    return " + ".join(map(str, L)) + f" = {sum(L)}"
+\end{lstlisting}
+
+\section{Exercício 1.20 -- usemodule}
+\subsection*{triangle.py}
+\begin{lstlisting}[language=Python]
+"""Funcoes para triangulos retangulos."""
+from math import hypot
+
+__version__ = "1.0"
+__author__ = "Autor"
+
+def hypotenuse(a, b):
+    """Retorna o comprimento da hipotenusa."""
+    return hypot(a, b)
+
+def area(a, b):
+    """Retorna a area de um triangulo retangulo."""
+    return a * b / 2
+\end{lstlisting}
+
+\subsection*{usemodule.py}
+\begin{lstlisting}[language=Python]
+import triangle
+
+def main():
+    print(triangle.hypotenuse(3, 4))
+    print(triangle.area(3, 4))
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+
+\section{Observação sobre as soluções}
+As soluções acima são implementações independentes construídas a partir dos enunciados presentes no PDF fornecido. Elas não são uma cópia de um gabarito oficial do MOOC.
+\end{document}

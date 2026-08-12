@@ -1,0 +1,243 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\geometry{margin=2.3cm}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible,frame=single,showstringspaces=false}
+\title{Data Analysis with Python 2024--2025\\Parte 1: Python\\\large Conteúdo Teórico}
+\author{Tradução e Adaptação: Universidade de Helsinque (MOOC.fi)}
+\date{2026}
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}.
+
+\tableofcontents
+\newpage
+
+\section{O que você vai aprender}
+Esta parte apresenta os fundamentos de Python usados no restante do curso. Os objetivos são aprender os conceitos básicos da linguagem, compreender strings e módulos, e trabalhar com sequências e objetos iteráveis. 
+
+\section{Entrada e saída básicas}
+O programa clássico ``Hello, world!'' é extremamente simples em Python. A função \texttt{print()} envia texto para a saída padrão. Vários argumentos podem ser passados para \texttt{print}; por padrão, eles são separados por espaços. Expressões numéricas são avaliadas antes de serem impressas.
+
+\begin{lstlisting}[language=Python]
+print("Hello world2!")
+print("Hello,", "John!", "How are you?")
+print(1, "plus", 2, "equals", 1+2)
+\end{lstlisting}
+
+A função \texttt{input()} permite ler texto digitado pelo usuário. O resultado de \texttt{input()} é uma string.
+\begin{lstlisting}[language=Python]
+name = input("Give me your name: ")
+print("Hello,", name)
+\end{lstlisting}
+
+\subsection{Indentação}
+Python usa indentação para marcar blocos de código. Quatro espaços são uma convenção comum. Diferentemente de linguagens que usam chaves, o fim da indentação marca o fim do bloco.
+
+\begin{lstlisting}[language=Python]
+for i in range(3):
+    print("Hello")
+print("Bye!")
+\end{lstlisting}
+
+A expressão \texttt{range(n)} produz os inteiros de 0 a \(n-1\); o limite final não é incluído.
+
+\section{Variáveis e tipos de dados}
+Uma atribuição associa um nome a um valor. Python não exige a declaração prévia de uma variável nem a especificação do tipo. O tipo pertence ao objeto referenciado, e isso caracteriza a tipagem dinâmica.
+
+Os tipos básicos destacados neste material incluem \texttt{int}, \texttt{float}, \texttt{complex}, \texttt{str}, \texttt{bool} e \texttt{bytes}. A função \texttt{type()} permite descobrir o tipo do valor atual de um nome.
+
+\begin{lstlisting}[language=Python]
+a = 1
+print(type(a))
+a = "algum texto"
+print(type(a))
+\end{lstlisting}
+
+Os construtores de tipo também podem ser usados para conversão, por exemplo \texttt{int()}, \texttt{float()}, \texttt{str()} e \texttt{bool()}.
+
+Bytes representam unidades de informação de 8 bits. Em situações que envolvem arquivos ou conjuntos de dados, a codificação de texto pode precisar ser especificada. O exemplo de UTF-8 mostra que um caractere pode ocupar mais de um byte.
+
+\section{Strings}
+Strings são sequências de caracteres delimitadas por aspas simples ou duplas. Aspas podem ser escapadas com barra invertida, e sequências como \texttt{\textbackslash n} e \texttt{\textbackslash t} representam nova linha e tabulação.
+
+Strings também podem ser escritas em múltiplas linhas usando aspas triplas. Embora seja possível concatenar com \texttt{+}, para muitas strings o método \texttt{join()} é preferível por eficiência.
+
+\subsection{Interpolação de strings}
+O material apresenta três formas: formatação tradicional, o método \texttt{format()} e f-strings. Atualmente, f-strings e \texttt{format()} são as formas mais usadas nos exemplos.
+
+\begin{lstlisting}[language=Python]
+print("{} plus {} is equal to {}".format(1, 3, 4))
+print(f"{1} plus {3} is equal to {4}")
+print(f"{1.6:.1f} {1.7:.2f} {1.8:.3f}")
+\end{lstlisting}
+
+Especificadores permitem controlar casas decimais e largura de campos. Para strings, o especificador \texttt{s} pode ser usado; para inteiros, \texttt{d}; e para números de ponto flutuante, \texttt{f}.
+
+\section{Expressões e instruções}
+Uma expressão é um trecho de código que produz um valor. Exemplos incluem operações aritméticas, chamadas de funções, indexação, comparações e acesso a atributos.
+
+Uma instrução é um comando que produz um efeito. Atribuições e chamadas de função isoladas são exemplos. Python possui operadores de atribuição aumentada como \texttt{+=}, \texttt{-=}, \texttt{*=}, \texttt{/=} e outros.
+
+\section{Laços para tarefas repetitivas}
+Python possui principalmente os laços \texttt{while} e \texttt{for}. Um \texttt{while} repete enquanto uma condição for verdadeira.
+
+\begin{lstlisting}[language=Python]
+i = 1
+while i*i < 1000:
+    print("Square of", i, "is", i*i)
+    i += 1
+\end{lstlisting}
+
+O \texttt{for} percorre os elementos de um iterável. Listas e objetos criados por \texttt{range()} são exemplos.
+
+\begin{lstlisting}[language=Python]
+s = 0
+for i in [0,1,2,3,4,5,6,7,8,9]:
+    s += i
+print("The sum is", s)
+\end{lstlisting}
+
+\section{Decisões com if}
+A estrutura \texttt{if/elif/else} seleciona blocos de acordo com condições booleanas.
+
+\begin{lstlisting}[language=Python]
+x = int(input("Give an integer: "))
+if x >= 0:
+    a = x
+else:
+    a = -x
+print("The absolute value of %i is %i" % (x, a))
+\end{lstlisting}
+
+\subsection{break e continue}
+\texttt{break} encerra o laço atual quando a condição desejada é encontrada. \texttt{continue} interrompe apenas a iteração corrente e passa para a próxima.
+
+\section{Funções}
+Funções são declaradas com \texttt{def}. Uma função pode possuir parâmetros, retornar um valor e conter uma docstring descrevendo sua finalidade.
+
+\begin{lstlisting}[language=Python]
+def double(x):
+    """Multiplica o argumento por dois."""
+    return x*2
+
+print(double(4))
+\end{lstlisting}
+
+Python permite parâmetros posicionais, parâmetros nomeados, valores padrão e empacotamento/desempacotamento com \texttt{*} e \texttt{**}. Funções criam um novo escopo local.
+
+\subsection{Escopo}
+Variáveis definidas dentro de uma função são locais. Variáveis globais são acessíveis de dentro da função, mas uma atribuição normalmente cria um nome local. A instrução \texttt{global} pode ser usada quando é realmente necessário reatribuir um global; em funções aninhadas, \texttt{nonlocal} referencia o escopo externo mais próximo.
+
+\section{Estruturas de dados}
+As principais estruturas destacadas são strings, listas, tuplas, dicionários e conjuntos.
+
+\subsection{Sequências}
+Listas podem ter quantidade arbitrária de elementos e são mutáveis. Tuplas são sequências ordenadas e imutáveis. Strings, listas e tuplas compartilham operações como \texttt{len()}, indexação, fatiamento, concatenação e repetição.
+
+A indexação começa em zero. Índices negativos contam a partir do final. Slices seguem a forma \texttt{sequencia[inicio:fim:passo]}, com o limite final excluído.
+
+\subsection{Modificação de listas}
+Listas podem ser alteradas por indexação, slicing e métodos como \texttt{append}, \texttt{extend}, \texttt{insert}, \texttt{remove}, \texttt{pop}, \texttt{reverse} e \texttt{sort}. A função \texttt{sorted()} devolve uma nova lista ordenada sem modificar a original.
+
+\subsection{range e ordenação}
+\texttt{range()} produz uma sequência numérica eficiente sem materializar obrigatoriamente uma lista. Seu passo pode ser especificado. Para ordenar, \texttt{sort()} altera a lista e \texttt{sorted()} produz outra.
+
+\subsection{zip}
+\texttt{zip()} combina várias sequências. Se duas sequências forem combinadas, os elementos resultam em pares; com \(n\) sequências, o resultado tem tuplas de \(n\) elementos. O tamanho é limitado pela sequência mais curta.
+
+\subsection{enumerate}
+\texttt{enumerate()} fornece simultaneamente índice e elemento. Conceitualmente, é equivalente a combinar \texttt{range(len(L))} e \texttt{L} com \texttt{zip()}.
+
+\subsection{Dicionários}
+Dicionários associam chaves a valores. As chaves precisam ser hashable. A consulta é feita por indexação. Entre os métodos importantes estão \texttt{items()}, \texttt{keys()}, \texttt{values()}, \texttt{get()}, \texttt{update()}, \texttt{pop()} e \texttt{popitem()}.
+
+\subsection{Conjuntos}
+Conjuntos armazenam elementos únicos e suportam união, interseção, diferença e diferença simétrica. Os operadores correspondentes são \texttt{|}, \texttt{\&}, \texttt{-} e \texttt{\string^}.
+
+\subsection{Operador in, desempacotamento e del}
+O operador \texttt{in} testa pertinência em contêineres. Sequências e dicionários também podem ser desempacotados em múltiplos nomes. A instrução \texttt{del} remove uma associação ou um item/slice de um contêiner.
+
+\section{Comprehensions}
+Comprehensions permitem construir estruturas de dados de maneira compacta. O material apresenta list comprehensions, dictionary comprehensions e set comprehensions, incluindo múltiplos laços e filtros.
+
+\section{Processamento de sequências}
+Funções podem ser tratadas como objetos de primeira classe: podem ser passadas como argumentos, retornadas por funções e armazenadas em variáveis ou estruturas de dados. Nesta parte são estudadas \texttt{map}, \texttt{filter}, \texttt{reduce} e expressões \texttt{lambda}.
+
+\subsection{map e lambda}
+\texttt{map()} aplica uma função a cada elemento e devolve um iterável. Em Python moderno, é comum convertê-lo explicitamente em lista quando se deseja visualizar ou armazenar os resultados.
+
+\begin{lstlisting}[language=Python]
+def double(x):
+    return 2*x
+L = [12, 4, -1]
+print(list(map(double, L)))
+\end{lstlisting}
+
+Uma \texttt{lambda} define uma pequena função sem nome.
+\begin{lstlisting}[language=Python]
+L = [2, 3, 5]
+print(list(map(lambda x: 2*x+x**2, L)))
+\end{lstlisting}
+
+\subsection{filter}
+\texttt{filter()} conserva apenas os elementos para os quais a função predicado retorna \texttt{True}. O material observa que comprehensions são frequentemente mais flexíveis em Python moderno.
+
+\subsection{reduce}
+\texttt{reduce()} combina iterativamente elementos de um iterável até obter um único resultado. Em Python, está em \texttt{functools}. Pode receber um valor inicial.
+
+\section{Manipulação de strings}
+Strings são imutáveis. Seus métodos não alteram a string original; em vez disso, retornam novos valores. O material organiza os métodos em grupos: classificação, transformação, busca, ajuste e junção/divisão.
+
+\subsection{Classificação}
+Métodos como \texttt{isalpha()}, \texttt{isdigit()}, \texttt{isalnum()}, \texttt{islower()}, \texttt{isupper()} e \texttt{isspace()} produzem valores booleanos.
+
+\subsection{Transformação}
+\texttt{lower()}, \texttt{upper()}, \texttt{capitalize()}, \texttt{title()} e \texttt{swapcase()} são exemplos de transformação de texto.
+
+\subsection{Busca}
+Métodos como \texttt{find()}, \texttt{index()}, \texttt{count()}, \texttt{startswith()} e \texttt{endswith()} ajudam a localizar substrings.
+
+\subsection{Ajuste}
+\texttt{strip()}, \texttt{lstrip()} e \texttt{rstrip()} removem caracteres das extremidades. O argumento pode especificar um conjunto de caracteres.
+
+\subsection{join e split}
+\texttt{join()} combina uma sequência de strings usando um separador. Para muitas strings, ele é mais eficiente que repetidas concatenações com \texttt{+}. \texttt{split()} divide uma string em partes, por um separador ou por espaços em branco quando nenhum separador é fornecido.
+
+\section{Módulos}
+Módulos dividem programas grandes em unidades menores e independentes. Cada arquivo \texttt{.py} pode funcionar como um módulo. A biblioteca padrão possui centenas de módulos; entre os exemplos citados estão \texttt{re}, \texttt{math}, \texttt{random}, \texttt{os} e \texttt{sys}.
+
+\subsection{Usando módulos}
+A forma \texttt{import math} permite acessar funções com o nome do módulo, como \texttt{math.cos(0)}. Também é possível importar nomes específicos com \texttt{from math import cos}. Embora \texttt{from math import *} exista, essa forma pode causar confusão por importar muitos nomes para o escopo atual.
+
+\subsection{Localização de módulos}
+Ao importar um módulo, Python procura primeiro módulos embutidos e depois os caminhos de \texttt{sys.path}. Isso explica por que arquivos locais podem ser importados e por que colisões de nomes podem ocorrer.
+
+\subsection{Hierarquia de módulos e pacotes}
+Pacotes são módulos que podem conter outros módulos e subpacotes. A hierarquia do sistema de arquivos representa a hierarquia de importação. Historicamente, arquivos \texttt{\_\_init\_\_.py} são usados para compor um pacote.
+
+\subsection{Conteúdo de um módulo}
+Atribuições, classes e funções definidas em um arquivo tornam-se atributos do módulo. O atributo \texttt{\_\_name\_\_} vale \texttt{"\_\_main\_\_"} quando o arquivo é executado diretamente. Isso permite usar o padrão:
+
+\begin{lstlisting}[language=Python]
+def main():
+    for _ in range(3):
+        print("Hello")
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+
+\section{Resumo}
+Os blocos de código em Python são definidos por indentação consistente. O laço \texttt{for} percorre os elementos de um iterável sem exigir o controle explícito dos índices. Python possui tipagem dinâmica, bom suporte para manipulação de strings e uma grande variedade de ferramentas para processar sequências, como \texttt{map}, \texttt{filter}, \texttt{reduce}, \texttt{zip}, \texttt{enumerate} e \texttt{range}. O material também destaca o uso de \texttt{join()} para concatenar muitas strings e o papel das funções anônimas \texttt{lambda}.
+\end{document}
