@@ -1,0 +1,132 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 3: NumPy (Parte 1)\\\large Caderno de Exercícios}
+\author{Tradução e Adaptação: Universidade de Helsinque (MOOC.fi)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}.
+
+\tableofcontents
+\newpage
+
+\section{Exercícios - Capítulo 2 (NumPy)}
+
+\subsection*{Exercício 2.11 -- Linhas e colunas}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escrever as funções \texttt{get\_rows} e \texttt{get\_columns} que recebam uma matriz bidimensional e retornem, respectivamente, listas contendo as linhas e colunas formatadas como vetores unidimensionais.
+    \item \textbf{Dica:} A operação de transposição (método \texttt{.T}) pode facilitar a extração das colunas ao ser combinada com a função de linhas.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 2.12 -- Vetores-linha e vetores-coluna}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Extrair linhas e colunas de uma matriz 2D de formato \texttt{(n, m)}, mas mantendo estritamente a estrutura 2D original dos vetores.
+    \item \textbf{Formato Esperado:} A função \texttt{get\_row\_vectors} deve retornar vetores no formato \texttt{(1, m)}. A função \texttt{get\_column\_vectors} deve retornar vetores no formato \texttt{(n, 1)}. Utilize \textit{slicing} inteligente que preserva a dimensão.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 2.13 -- Diamante}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Criar a função \texttt{diamond(n)} que gera uma matriz bidimensional representando a figura de um losango/diamante delimitado por valores \texttt{1}, enquanto os outros valores permanecem \texttt{0}.
+    \item \textbf{Ferramentas:} Utilize a manipulação de blocos de matrizes unindo \texttt{np.eye} (para a geração de diagonais), operações de reflexão (\texttt{np.fliplr}, \texttt{np.flipud}), e junção com \texttt{np.concatenate}.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 2.14 -- Comprimento de vetores}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Criar a função \texttt{vector\_lengths(a)} que receba uma matriz de formato \texttt{(n, m)} e calcule o comprimento/norma euclidiana de cada uma das \texttt{n} linhas.
+    \item \textbf{Restrições:} É estritamente \textbf{proibido o uso de laços} (\texttt{for}/\texttt{while}) e não é permitido invocar \texttt{scipy.linalg.norm}.
+    \item \textbf{Ferramentas Matemáticas:} A solução deve ser vetorizada, baseando-se no fato que a norma Euclidiana é a raiz da soma dos quadrados. Utilize pelo menos as funções \texttt{np.sum} e \texttt{np.sqrt}.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 2.15 -- Ângulos entre vetores}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Desenvolver \texttt{vector\_angles(X, Y)} para calcular simultaneamente os ângulos (em graus) entre vetores representados pelas linhas das matrizes \texttt{X} e \texttt{Y}.
+    \item \textbf{Fórmula:} O cosseno do ângulo é obtido dividindo o produto interno escalar dos vetores pelo produto numérico das suas respectivas normas.
+    \item \textbf{Restrições:} O uso de laços é proibido. Para contornar imperfeições e imprecisões no processamento em float, antes de passar o cosseno para o \texttt{np.arccos}, garanta que ele esteja preso no limite entre \texttt{[-1.0, 1.0]} utilizando o método \texttt{np.clip}. Aplique \texttt{np.degrees} na saída.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 2.16 -- Tabuada revisitada}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Construir a função \texttt{multiplication\_table(n)} que retorne um array bidimensional de tamanho \texttt{(n, n)}, em que cada célula \texttt{i, j} possui o valor exato da multiplicação de seus eixos (\texttt{i * j}).
+    \item \textbf{Restrições:} Não utilizar laços \texttt{for} na solução final.
+    \item \textbf{Ferramentas:} Sua resolução obrigatoriamente exigirá a aplicação do conceito de \textit{broadcasting}. Instancie os multiplicadores base via \texttt{np.arange}, altere seus eixos utilizando \texttt{reshape}, e delegue a carga matemática aos operadores universais do NumPy.
+\end{itemize}
+\end{exercicio}
+
+\end{document}
