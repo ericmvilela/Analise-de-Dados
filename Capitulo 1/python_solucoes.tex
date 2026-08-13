@@ -1,53 +1,107 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[brazil]{babel}
+\usepackage[portuguese]{babel}
 \usepackage{geometry}
+\geometry{margin=2.5cm}
 \usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{hyperref}
-\geometry{margin=2.3cm}
-\lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible,frame=single,showstringspaces=false}
-\title{Soluções dos exercícios\\Data Analysis with Python 2024--2025 -- Parte 1}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 1: Python\\\large Soluções dos Exercícios}
 \author{Soluções independentes baseadas nos enunciados do PDF fornecido}
-\date{2026}
+\date{}
+
 \begin{document}
 \maketitle
+
+\section*{Nota Importante}
+Este material é uma adaptação das soluções independentes para os exercícios baseados no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}. As soluções abaixo não são o gabarito oficial do curso.
+
 \tableofcontents
-\section{Exercício 1.1 -- hello world}
-\begin{lstlisting}[language=Python]
+\newpage
+
+\section{Soluções - Capítulo 1}
+
+\subsection*{Exercício 1.1 -- hello world}
+\begin{solucao}
+\begin{lstlisting}
 print("Hello, world!")
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.2 -- compliment}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.2 -- compliment}
+\begin{solucao}
+\begin{lstlisting}
 country = input("What country are you from? ")
 print(f"I have heard that {country} is a beautiful country.")
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.3 -- multiplication}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.3 -- multiplication}
+\begin{solucao}
+\begin{lstlisting}
 for i in range(11):
     print(f"4 multiplied by {i} is {4*i}")
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.4 -- multiplication table}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.4 -- multiplication table}
+\begin{solucao}
+\begin{lstlisting}
 for i in range(1, 11):
     for j in range(1, 11):
         print(f"{i*j:4}", end="")
     print()
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.5 -- two dice}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.5 -- two dice}
+\begin{solucao}
+\begin{lstlisting}
 for a in range(1, 7):
     for b in range(1, 7):
         if a + b == 5:
             print((a, b))
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.6 -- triple square}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.6 -- triple square}
+\begin{solucao}
+\begin{lstlisting}
 def triple(x):
     return 3*x
 
@@ -59,9 +113,11 @@ for i in range(1, 11):
         break
     print(f"triple({i})=={triple(i)} square({i})=={square(i)}")
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.7 -- areas of shapes}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.7 -- areas of shapes}
+\begin{solucao}
+\begin{lstlisting}
 import math
 
 while True:
@@ -86,18 +142,22 @@ while True:
 
     print(f"The area is {area:f}")
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.8 -- solve quadratic}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.8 -- solve quadratic}
+\begin{solucao}
+\begin{lstlisting}
 from math import sqrt
 
 def solve_quadratic(a, b, c):
     d = b*b - 4*a*c
     return ((-b + sqrt(d)) / (2*a), (-b - sqrt(d)) / (2*a))
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.9 -- merge}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.9 -- merge}
+\begin{solucao}
+\begin{lstlisting}
 def merge(L1, L2):
     result = []
     i = j = 0
@@ -112,9 +172,11 @@ def merge(L1, L2):
     result.extend(L2[j:])
     return result
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.10 -- detect ranges}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.10 -- detect ranges}
+\begin{solucao}
+\begin{lstlisting}
 def detect_ranges(L):
     values = sorted(L)
     result = []
@@ -132,24 +194,30 @@ def detect_ranges(L):
         i += 1
     return result
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.11 -- interleave}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.11 -- interleave}
+\begin{solucao}
+\begin{lstlisting}
 def interleave(*lists):
     result = []
     for group in zip(*lists):
         result.extend(group)
     return result
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.12 -- distinct characters}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.12 -- distinct characters}
+\begin{solucao}
+\begin{lstlisting}
 def distinct_characters(L):
     return {s: len(set(s)) for s in L}
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.13 -- reverse dictionary}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.13 -- reverse dictionary}
+\begin{solucao}
+\begin{lstlisting}
 def reverse_dictionary(d):
     result = {}
     for english, finnish_words in d.items():
@@ -157,36 +225,46 @@ def reverse_dictionary(d):
             result.setdefault(finnish, []).append(english)
     return result
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.14 -- find matching}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.14 -- find matching}
+\begin{solucao}
+\begin{lstlisting}
 def find_matching(L, search):
     return [i for i, value in enumerate(L) if search in value]
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.15 -- two dice comprehension}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.15 -- two dice comprehension}
+\begin{solucao}
+\begin{lstlisting}
 pairs = [(a, b) for a in range(1, 7) for b in range(1, 7) if a + b == 5]
 for pair in pairs:
     print(pair)
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.16 -- transform}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.16 -- transform}
+\begin{solucao}
+\begin{lstlisting}
 def transform(s1, s2):
     a = map(int, s1.split())
     b = map(int, s2.split())
     return [x*y for x, y in zip(a, b)]
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.17 -- positive list}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.17 -- positive list}
+\begin{solucao}
+\begin{lstlisting}
 def positive_list(L):
     return list(filter(lambda x: x > 0, L))
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.18 -- acronyms}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.18 -- acronyms}
+\begin{solucao}
+\begin{lstlisting}
 import string
 
 def acronyms(text):
@@ -197,35 +275,41 @@ def acronyms(text):
             result.append(cleaned)
     return result
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.19 -- sum equation}
-\begin{lstlisting}[language=Python]
+\subsection*{Exercício 1.19 -- sum equation}
+\begin{solucao}
+\begin{lstlisting}
 def sum_equation(L):
     if not L:
         return "0 = 0"
     return " + ".join(map(str, L)) + f" = {sum(L)}"
 \end{lstlisting}
+\end{solucao}
 
-\section{Exercício 1.20 -- usemodule}
-\subsection*{triangle.py}
-\begin{lstlisting}[language=Python]
-"""Funcoes para triangulos retangulos."""
+\subsection*{Exercício 1.20 -- usemodule}
+\subsubsection*{triangle.py}
+\begin{solucao}
+\begin{lstlisting}
+# Funcoes para triangulos retangulos.
 from math import hypot
 
 __version__ = "1.0"
 __author__ = "Autor"
 
 def hypotenuse(a, b):
-    """Retorna o comprimento da hipotenusa."""
+    # Retorna o comprimento da hipotenusa.
     return hypot(a, b)
 
 def area(a, b):
-    """Retorna a area de um triangulo retangulo."""
+    # Retorna a area de um triangulo retangulo.
     return a * b / 2
 \end{lstlisting}
+\end{solucao}
 
-\subsection*{usemodule.py}
-\begin{lstlisting}[language=Python]
+\subsubsection*{usemodule.py}
+\begin{solucao}
+\begin{lstlisting}
 import triangle
 
 def main():
@@ -235,7 +319,6 @@ def main():
 if __name__ == "__main__":
     main()
 \end{lstlisting}
+\end{solucao}
 
-\section{Observação sobre as soluções}
-As soluções acima são implementações independentes construídas a partir dos enunciados presentes no PDF fornecido. Elas não são uma cópia de um gabarito oficial do MOOC.
 \end{document}

@@ -1,0 +1,195 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 3: NumPy (Parte 2)\\\large Soluções dos Exercícios}
+\author{Soluções independentes baseadas nos enunciados originais}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma adaptação das soluções independentes para os exercícios baseados no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}. As soluções abaixo não são o gabarito oficial do curso.
+
+\tableofcontents
+\newpage
+
+\section{Soluções - Capítulo 3 (Parte 2)}
+
+\subsection*{Exercício 3.1 -- Comparação de colunas}
+\begin{solucao}
+\begin{lstlisting}
+import numpy as np
+
+def column_comparison(a):
+    return a[a[:, 1] > a[:, -2]]
+\end{lstlisting}
+A comparação é vetorizada e usa uma máscara booleana para selecionar as linhas desejadas.
+\end{solucao}
+
+\subsection*{Exercício 3.2 -- Primeira metade e segunda metade}
+\begin{solucao}
+\begin{lstlisting}
+import numpy as np
+
+def first_half_second_half(a):
+    m = a.shape[1] // 2
+    left_sum = np.sum(a[:, :m], axis=1)
+    right_sum = np.sum(a[:, m:], axis=1)
+    return a[left_sum > right_sum]
+\end{lstlisting}
+As duas somas são calculadas exatamente uma vez cada.
+\end{solucao}
+
+\subsection*{Exercício 3.3 -- Mais frequente primeiro}
+\begin{solucao}
+\begin{lstlisting}
+import numpy as np
+
+def most_frequent_first(a, c):
+    values, counts = np.unique(a[:, c], return_counts=True)
+    frequency = dict(zip(values.tolist(), counts.tolist()))
+    row_counts = np.array([frequency[x] for x in a[:, c]])
+    order = np.argsort(-row_counts, kind="stable")
+    return a[order]
+\end{lstlisting}
+A coluna escolhida é usada apenas para calcular a frequência de cada valor; o array inteiro é então reordenado de acordo com essas frequências.
+\end{solucao}
+
+\subsection*{Exercício 3.4 -- Potência de matriz}
+\begin{solucao}
+\begin{lstlisting}
+import numpy as np
+from functools import reduce
+
+def matrix_power(a, n):
+    if n == 0:
+        return np.eye(a.shape[0])
+    base = np.linalg.inv(a) if n < 0 else a
+    exponent = abs(n)
+    return reduce(lambda x, y: x @ y, (base for _ in range(exponent)))
+\end{lstlisting}
+A expressão geradora fornece a matriz repetidamente ao \texttt{reduce}, e a multiplicação utilizada é a multiplicação matricial.
+\end{solucao}
+
+\subsection*{Exercício 3.5 -- Correlação}
+\begin{solucao}
+\textbf{Parte 1} \\
+Assumindo que a função \texttt{load()} devolva o array Iris:
+\begin{lstlisting}
+from scipy.stats import pearsonr
+
+def lengths():
+    data = load()
+    return pearsonr(data[:, 0], data[:, 2])[0]
+\end{lstlisting}
+
+\textbf{Parte 2}
+\begin{lstlisting}
+import numpy as np
+
+def correlations():
+    data = load()
+    return np.corrcoef(data, rowvar=False)
+
+# Para identificar o par mais correlacionado sem considerar a diagonal principal:
+def most_correlated_pair():
+    data = load()
+    corr = np.corrcoef(data, rowvar=False)
+    upper = np.triu(np.abs(corr), k=1)
+    i, j = np.unravel_index(np.argmax(upper), upper.shape)
+    return i, j, corr[i, j]
+\end{lstlisting}
+No conjunto Iris clássico, o par mais fortemente correlacionado é o comprimento da pétala e a largura da pétala.
+\end{solucao}
+
+\subsection*{Exercício 3.6 -- Encontro de retas}
+\begin{solucao}
+Para $y = a_1x + b_1$ e $y = a_2x + b_2$, podemos escrever $a_1x - y = -b_1$ e $a_2x - y = -b_2$.
+\begin{lstlisting}
+import numpy as np
+
+def meeting_lines(a1, b1, a2, b2):
+    A = np.array([[a1, -1], [a2, -1]], dtype=float)
+    b = np.array([-b1, -b2], dtype=float)
+    x, y = np.linalg.solve(A, b)
+    return x, y
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 3.7 -- Encontro de planos}
+\begin{solucao}
+As equações $z = a_iy + b_ix + c_i$ podem ser reescritas como $b_ix + a_iy - z = -c_i$.
+\begin{lstlisting}
+import numpy as np
+
+def meeting_planes(a1, b1, c1, a2, b2, c2, a3, b3, c3):
+    A = np.array([
+        [b1, a1, -1],
+        [b2, a2, -1],
+        [b3, a3, -1]
+    ], dtype=float)
+    b = np.array([-c1, -c2, -c3], dtype=float)
+    x, y, z = np.linalg.solve(A, b)
+    return x, y, z
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 3.8 -- Retas quase concorrentes}
+\begin{solucao}
+Podemos montar o mesmo sistema do exercício 3.6 e resolvê-lo com mínimos quadrados. Quando o sistema possui uma solução exata, \texttt{A @ solution} coincide com \texttt{b}; caso contrário, a solução é o ponto que minimiza o erro quadrático.
+\begin{lstlisting}
+import numpy as np
+
+def almost_meeting_lines(a1, b1, a2, b2):
+    A = np.array([[a1, -1], [a2, -1]], dtype=float)
+    b = np.array([-b1, -b2], dtype=float)
+    solution, residuals, rank, _ = np.linalg.lstsq(A, b, rcond=None)
+    exact = (rank == 2) and np.allclose(A @ solution, b)
+    return solution, exact
+\end{lstlisting}
+\end{solucao}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

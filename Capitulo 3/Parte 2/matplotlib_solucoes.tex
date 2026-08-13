@@ -1,0 +1,121 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 3: Matplotlib\\\large Soluções dos Exercícios}
+\author{Soluções independentes baseadas nos enunciados originais}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma adaptação das soluções independentes para os exercícios baseados no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}. As soluções abaixo não são o gabarito oficial do curso.
+
+\tableofcontents
+\newpage
+
+\section{Soluções - Capítulo 3 (Matplotlib)}
+
+\subsection*{Exercício 3.9 -- Vários gráficos}
+\begin{solucao}
+\begin{lstlisting}
+import matplotlib.pyplot as plt
+
+def main():
+    x1 = [2, 4, 6, 7]
+    y1 = [4, 3, 5, 1]
+    
+    x2 = [1, 2, 3, 4]
+    y2 = [4, 2, 3, 1]
+    
+    plt.plot(x1, y1)
+    plt.plot(x2, y2)
+    
+    plt.title("Dois graficos no mesmo conjunto de eixos")
+    plt.xlabel("Eixo x")
+    plt.ylabel("Eixo y")
+    
+    plt.show()
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 3.10 -- Subfiguras}
+\begin{solucao}
+\begin{lstlisting}
+import numpy as np
+import matplotlib.pyplot as plt
+
+def subfigures(a):
+    fig, ax = plt.subplots(1, 2)
+    
+    ax[0].plot(a[:, 0], a[:, 1])
+    
+    ax[1].scatter(
+        a[:, 0],
+        a[:, 1],
+        c=a[:, 2],
+        s=a[:, 3]
+    )
+    
+    plt.show()
+
+def main():
+    a = np.array([
+        [1, 2, 10, 20],
+        [2, 3, 20, 40],
+        [3, 1, 30, 60],
+        [4, 5, 40, 80]
+    ])
+    subfigures(a)
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+\end{solucao}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

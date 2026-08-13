@@ -1,0 +1,125 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 3: NumPy (Parte 2)\\\large Caderno de Exercícios}
+\author{Tradução e Adaptação: The University of Helsinki MOOC Center}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}.
+
+\tableofcontents
+\newpage
+
+\section{Exercícios - Capítulo 3 (Parte 2)}
+
+\subsection*{Exercício 3.1 -- Comparação de colunas}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{column\_comparison}, que recebe um array bidimensional. A função deve retornar um novo array contendo as linhas em que o valor da segunda coluna é maior do que o valor da penúltima coluna. Pode-se assumir que a entrada possui pelo menos duas colunas. Não use loops; use operações vetorizadas.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 3.2 -- Primeira metade e segunda metade}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva \texttt{first\_half\_second\_half}, que recebe um array de forma \texttt{(n, 2m)}. Para cada linha, calcule a soma dos primeiros \texttt{m} elementos e a soma dos últimos \texttt{m} elementos. Retorne as linhas nas quais a primeira soma é maior. Sua solução deve chamar \texttt{np.sum} (ou o método equivalente) exatamente duas vezes.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 3.3 -- Mais frequente primeiro}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{most\_frequent\_first}, que recebe um array bidimensional e o índice \texttt{c} de uma coluna. As linhas devem ser reorganizadas de forma que primeiro apareçam as linhas cujo elemento na coluna \texttt{c} seja o mais frequente, depois as do segundo elemento mais frequente, e assim por diante. Os valores das outras colunas não devem influenciar a ordenação.
+    \item \textbf{Dica:} A ordem entre linhas que pertencem ao mesmo grupo de frequência pode ser arbitrária. A função \texttt{np.unique} pode ser útil.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 3.4 -- Potência de matriz}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Implemente a funcionalidade de \texttt{numpy.linalg.matrix\_power}. Dada uma matriz quadrada \texttt{a} e um inteiro não negativo \texttt{n}, calcule $a^n = a @ a @ \dots @ a$ (\texttt{n} vezes). Quando $n=0$, o resultado deve ser \texttt{np.eye(m)}.
+    \item \textbf{Implementação:} Use a função \texttt{reduce} e uma expressão geradora. Depois, estenda a função para potências negativas: nesse caso, $a^n$ é definido como a potência correspondente da matriz inversa de \texttt{a}. A entrada pode ser considerada invertível.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 3.5 -- Correlação}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Contexto:} Considere o conjunto de dados Iris, contendo: 1. comprimento da sépala, 2. largura da sépala, 3. comprimento da pétala e 4. largura da pétala.
+    \item \textbf{Parte 1:} Calcule a correlação de Pearson entre comprimento da sépala e comprimento da pétala usando \texttt{scipy.stats.pearsonr}. A função \texttt{lengths} deve carregar os dados e retornar a correlação.
+    \item \textbf{Parte 2:} Calcule todas as correlações em um array (4, 4) usando \texttt{np.corrcoef}. Determine qual par de variáveis possui a maior correlação.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 3.6 -- Encontro de retas}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{meeting\_lines}, que recebe os coeficientes de duas retas e retorna o ponto onde elas se encontram. As equações são:
+    $y = a_1x + b_1$ e $y = a_2x + b_2$.
+    \item \textbf{Dica:} Use \texttt{np.linalg.solve} e crie uma função principal para testar a solução.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 3.7 -- Encontro de planos}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{meeting\_planes}, que recebe os coeficientes de três planos e retorna o ponto onde os três se encontram. As equações são:
+    $z = a_1y + b_1x + c_1$, $z = a_2y + b_2x + c_2$ e $z = a_3y + b_3x + c_3$.
+    \item \textbf{Dica:} Use \texttt{np.linalg.solve}.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 3.8 -- Retas quase concorrentes}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} No exercício anterior de encontro de retas, existe um problema quando as retas não se encontram. Estenda a solução para indicar o ponto de encontro quando ele existir e, caso contrário, encontrar o ponto mais próximo de ambas usando \texttt{numpy.linalg.lstsq}.
+\end{itemize}
+\end{exercicio}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

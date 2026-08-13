@@ -1,0 +1,209 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 5: Pandas (DataFrames na Prática)\\\large Soluções dos Exercícios}
+\author{Soluções independentes baseadas nos enunciados originais}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma adaptação das soluções independentes para os exercícios baseados no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}. As soluções abaixo não são o gabarito oficial do curso.
+
+\tableofcontents
+\newpage
+
+\section{Soluções - Pandas na Prática}
+
+A seguir estão as soluções propostas para os exercícios da lista complementar. Todos os trechos assumem que o \texttt{pandas} e \texttt{numpy} já foram importados como \texttt{pd} e \texttt{np}.
+
+\subsection*{Exercício 1 -- Capitais}
+\begin{solucao}
+\begin{lstlisting}
+import pandas as pd
+
+def capitais():
+    dados = {
+        "Capital": ["Recife", "Salvador", "Fortaleza", "Curitiba", "Manaus"],
+        "Populacao": [1653461, 2418616, 2428708, 1963726, 2219580]
+    }
+    indice = ["Pernambuco", "Bahia", "Ceara", "Parana", "Amazonas"]
+    return pd.DataFrame(dados, index=indice)
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 2 -- Tabela de potências}
+\begin{solucao}
+\begin{lstlisting}
+import pandas as pd
+
+def tabela_de_potencias(serie, k):
+    colunas = {expoente: serie ** expoente for expoente in range(1, k + 1)}
+    return pd.DataFrame(colunas, index=serie.index)
+\end{lstlisting}
+Aqui construímos um dicionário em que cada chave é um expoente (de 1 até k) e o valor é a série elevada a esse expoente. Como o pandas preserva a ordem das chaves do dicionário ao montar as colunas, o resultado já sai na ordem correta.
+\end{solucao}
+
+\subsection*{Exercício 3 -- Carregando um arquivo tabulado}
+\begin{solucao}
+\begin{lstlisting}
+import pandas as pd
+
+def carregar_vendas(caminho):
+    df = pd.read_csv(caminho, sep="\t")
+    linhas, colunas = df.shape
+    print(f"Formato: {linhas}, {colunas}")
+    print("Colunas:")
+    for nome_coluna in df.columns:
+        print(nome_coluna)
+    return df
+\end{lstlisting}
+O parâmetro \texttt{sep="\textbackslash t"} instrui o \texttt{read\_csv} a interpretar o caractere de tabulação como separador de campos, já que o arquivo não usa vírgulas.
+\end{solucao}
+
+\subsection*{Exercício 4 -- Filtro de funcionários}
+\begin{solucao}
+\begin{lstlisting}
+def salarios_altos(df, limite):
+    filtro = df["salario"] > limite
+    return df.loc[filtro, ["nome", "salario"]]
+\end{lstlisting}
+Primeiro construímos uma máscara booleana comparando a coluna de salários com o limite; em seguida usamos \texttt{loc} para aplicar essa máscara às linhas e, ao mesmo tempo, restringir o resultado às colunas desejadas -- tudo em uma única operação.
+\end{solucao}
+
+\subsection*{Exercício 5 -- Seleção com loc}
+\begin{solucao}
+\begin{lstlisting}
+def selecionar_com_loc(df):
+    return df.loc["Ana":"Diego", ["salario", "setor"]]
+\end{lstlisting}
+Ao contrário das fatias comuns do Python, uma fatia de rótulos com \texttt{loc} inclui o limite superior -- por isso "Diego" aparece no resultado.
+\end{solucao}
+
+\subsection*{Exercício 6 -- Seleção com iloc}
+\begin{solucao}
+\begin{lstlisting}
+def top5_por_posicao(df):
+    return df.iloc[0:5, 0:2]
+\end{lstlisting}
+Com \texttt{iloc}, os limites funcionam como fatias comuns do Python (o limite superior é exclusivo), daí selecionarmos até a posição 5 para obter as 5 primeiras linhas.
+\end{solucao}
+
+\subsection*{Exercício 7 -- Temperatura máxima}
+\begin{solucao}
+\begin{lstlisting}
+def temperatura_maxima(df):
+    return df["Temperatura (C)"].max()
+
+# No programa principal:
+# maximo = temperatura_maxima(df)
+# print(f"Temperatura maxima: {maximo:.1f}")
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 8 -- Média de um mês específico}
+\begin{solucao}
+\begin{lstlisting}
+def media_do_mes(df, mes):
+    subset = df[df["mes"] == mes]
+    return subset["Temperatura (C)"].mean()
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 9 -- Dias de chuva}
+\begin{solucao}
+\begin{lstlisting}
+def dias_de_chuva(df):
+    return (df["Precipitacao (mm)"] > 0).sum()
+\end{lstlisting}
+A comparação produz uma série booleana (\texttt{True}/\texttt{False}); somar essa série equivale a contar quantos valores são \texttt{True}, já que o Python trata \texttt{True} como 1 e \texttt{False} como 0.
+\end{solucao}
+
+\subsection*{Exercício 10 -- Limpeza de um sensor com falhas}
+\begin{solucao}
+\begin{lstlisting}
+import pandas as pd
+
+def limpar_sensor(caminho):
+    df = pd.read_csv(caminho)
+    df = df.dropna(axis=0, how="all")  # remove linhas totalmente vazias
+    df = df.dropna(axis=1, how="all")  # remove colunas totalmente vazias
+    return df
+\end{lstlisting}
+O parâmetro \texttt{how="all"} garante que uma linha (ou coluna) só será descartada quando todos os seus valores estiverem ausentes -- diferente do comportamento padrão de \texttt{dropna}, que remove uma linha assim que encontra qualquer valor faltando.
+\end{solucao}
+
+\subsection*{Exercício 11 -- Tipos de valores ausentes}
+\begin{solucao}
+\begin{lstlisting}
+import pandas as pd
+import numpy as np
+
+def tabela_com_lacunas():
+    dados = {
+        "Fundacao": [1822, 1816, np.nan, 1825, 1811],
+        "Capital": ["Brasilia", "Buenos Aires", "Santiago", None, "Assuncao"]
+    }
+    indice = ["Brasil", "Argentina", "Chile", "Uruguai", "Paraguai"]
+    df = pd.DataFrame(dados, index=indice)
+    df.index.name = "Pais"
+    return df
+\end{lstlisting}
+Usamos \texttt{np.nan} para a lacuna na coluna numérica (o que automaticamente promove essa coluna para o tipo \texttt{float64}) e \texttt{None} para a lacuna na coluna de texto (mantendo o tipo \texttt{object}).
+\end{solucao}
+
+\subsection*{Exercício 12 -- Separando nome completo e normalizando texto}
+\begin{solucao}
+\begin{lstlisting}
+def separar_nomes(serie):
+    partes = serie.str.split(expand=True)
+    partes.columns = ["Primeiro_nome", "Sobrenome"]
+    return partes.apply(lambda coluna: coluna.str.capitalize())
+\end{lstlisting}
+Primeiro dividimos cada string em duas colunas com \texttt{str.split(expand=True)}. Depois renomeamos as colunas e aplicamos \texttt{str.capitalize()} a cada uma delas para deixar a primeira letra maiúscula, mantendo o restante em minúsculas.
+\end{solucao}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

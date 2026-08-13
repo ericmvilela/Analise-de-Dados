@@ -1,0 +1,180 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 5: Pandas (DataFrames na Prática)\\\large Caderno de Exercícios}
+\author{Tradução e Adaptação: The University of Helsinki MOOC Center}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}.
+
+\tableofcontents
+\newpage
+
+\section{Exercícios - Pandas na Prática}
+
+\subsection*{Exercício 1 -- Capitais}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva uma função \texttt{capitais()} que devolva o seguinte DataFrame, com o nome do estado como índice das linhas:
+    \begin{verbatim}
+                Capital  Populacao
+    Pernambuco   Recife    1653461
+    Bahia      Salvador    2418616
+    Ceara     Fortaleza    2428708
+    Parana     Curitiba    1963726
+    Amazonas     Manaus    2219580
+    \end{verbatim}
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 2 -- Tabela de potências}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Implemente a função \texttt{tabela\_de\_potencias(serie, k)}, que recebe uma Series e um inteiro positivo \texttt{k}, e devolve um DataFrame com o mesmo índice da série de entrada. A primeira coluna deve conter a própria série; a segunda, a série elevada ao quadrado; a terceira, ao cubo; e assim por diante até a potência \texttt{k}. As colunas devem ser nomeadas com os números de 1 a \texttt{k}.
+    \item \textbf{Exemplo de uso:}
+    \begin{lstlisting}
+    s = pd.Series([2, 3, 5], index=list("xyz"))
+    print(tabela_de_potencias(s, 3))
+    \end{lstlisting}
+    \item \textbf{Saída esperada:}
+    \begin{verbatim}
+       1   2    3
+    x  2   4    8
+    y  3   9   27
+    z  5  25  125
+    \end{verbatim}
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 3 -- Carregando um arquivo tabulado}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Suponha que exista um arquivo \texttt{vendas.tsv}, separado por tabulações, com colunas de vendas mensais de uma loja. Escreva uma função \texttt{carregar\_vendas(caminho)} que leia o arquivo com \texttt{pd.read\_csv} (lembrando de indicar o separador correto) e imprima, no seguinte formato, o número de linhas/colunas e os nomes das colunas:
+    \begin{verbatim}
+    Formato: linhas, colunas
+    Colunas:
+    col1
+    col2
+    ...
+    \end{verbatim}
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 4 -- Filtro de funcionários}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Dado um DataFrame \texttt{funcionarios} com colunas \texttt{nome}, \texttt{cargo}, \texttt{salario} e \texttt{setor}, escreva a função \texttt{salarios\_altos(df, limite)} que devolva apenas as linhas cujo salário é maior que \texttt{limite}, contendo somente as colunas \texttt{nome} e \texttt{salario}.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 5 -- Seleção com loc}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{selecionar\_com\_loc(df)} que, usando obrigatoriamente o atributo \texttt{loc}, devolva as linhas de índice "Ana" até "Diego" (incluindo ambos), restritas às colunas "salario" e "setor".
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 6 -- Seleção com iloc}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{top5\_por\_posicao(df)} que devolva as 5 primeiras linhas e as duas primeiras colunas de um DataFrame, usando uma única chamada ao atributo \texttt{iloc}.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 7 -- Temperatura máxima}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{temperatura\_maxima(df)} que recebe um DataFrame de medições climáticas diárias (com uma coluna "Temperatura (C)") e devolve o valor máximo registrado. No programa principal, imprima o resultado no formato: \texttt{Temperatura maxima: xx.x}.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 8 -- Média de um mês específico}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{media\_do\_mes(df, mes)} que devolva a temperatura média do mês informado (um número de 1 a 12), assumindo que o DataFrame tenha uma coluna "mes".
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 9 -- Dias de chuva}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{dias\_de\_chuva(df)} que devolva o número de dias em que a coluna "Precipitacao (mm)" foi maior que zero.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 10 -- Limpeza de um sensor com falhas}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Um arquivo \texttt{sensor.csv} contém leituras horárias de um sensor de umidade, mas as últimas linhas do arquivo estão totalmente vazias (erro de exportação), e existe uma coluna extra que ficou inteiramente sem valores. Escreva a função \texttt{limpar\_sensor(caminho)} que carregue o arquivo, remova as linhas totalmente vazias e remova também as colunas totalmente vazias, devolvendo o DataFrame limpo.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 11 -- Tipos de valores ausentes}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{tabela\_com\_lacunas()} que reconstrua o seguinte DataFrame, usando a coluna \texttt{Pais} como índice. A coluna \texttt{Fundacao} deve ter tipo float (para admitir valores ausentes) e a coluna \texttt{Capital} deve ter tipo \texttt{object}. Onde houver um travessão, use o valor de ausência apropriado.
+    \begin{verbatim}
+    Pais        Fundacao       Capital
+    Brasil          1822      Brasilia
+    Argentina       1816  Buenos Aires
+    Chile              -      Santiago
+    Uruguai         1825             -
+    Paraguai        1811      Assuncao
+    \end{verbatim}
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 12 -- Separando nome completo e normalizando texto}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{separar\_nomes(serie)} que recebe uma Series de nomes completos escritos em letras minúsculas (por exemplo, "joana pereira") e devolve um DataFrame com duas colunas, "Primeiro\_nome" e "Sobrenome", ambas com a primeira letra maiúscula. Assuma que cada nome tem exatamente duas palavras.
+\end{itemize}
+\end{exercicio}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

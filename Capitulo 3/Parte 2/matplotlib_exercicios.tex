@@ -1,0 +1,80 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 3: Matplotlib\\\large Caderno de Exercícios}
+\author{Tradução e Adaptação: The University of Helsinki MOOC Center}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}.
+
+\tableofcontents
+\newpage
+
+\section{Exercícios - Capítulo 3 (Matplotlib)}
+
+\subsection*{Exercício 3.9 -- Vários Gráficos}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Consulte a documentação de \texttt{plt.plot} para descobrir como especificar explicitamente as coordenadas x. Descubra também como desenhar vários gráficos dentro do mesmo conjunto de eixos.
+    \item \textbf{Instruções:} Na função \texttt{main}, faça o gráfico de duas curvas em um único conjunto de eixos. A primeira curva deve utilizar as coordenadas x: \texttt{2, 4, 6, 7} e as coordenadas y: \texttt{4, 3, 5, 1}. A segunda curva deve utilizar as coordenadas x: \texttt{1, 2, 3, 4} e as coordenadas y: \texttt{4, 2, 3, 1}.
+    \item \textbf{Detalhes visuais:} Adicione também um título e rótulos para os eixos x e y. No modo não interativo, é necessário chamar \texttt{plt.show()} para exibir a figura.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 3.10 -- Subfiguras}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva uma função chamada \texttt{subfigures} que crie uma figura contendo duas subfiguras (dois \texttt{axes}, na terminologia do Matplotlib). A função recebe como parâmetro um array bidimensional \texttt{a}.
+    \item \textbf{Figura 1:} Na subfigura da esquerda, utilize o método \texttt{plot} para desenhar um gráfico em que as coordenadas x estão na primeira coluna de \texttt{a}, e as coordenadas y estão na segunda coluna de \texttt{a}.
+    \item \textbf{Figura 2:} Na subfigura da direita, utilize o método \texttt{scatter} para desenhar os mesmos pontos, mas agora as coordenadas x estão na primeira coluna, as coordenadas y estão na segunda coluna, a cor (\texttt{c}) de cada ponto vem da terceira coluna, e o tamanho (\texttt{s}) de cada ponto vem da quarta coluna. 
+    \item \textbf{Instruções Finais:} Para isso, utilize os parâmetros nomeados \texttt{c} e \texttt{s} do método \texttt{scatter}. Teste a função \texttt{subfigures} a partir da função principal.
+\end{itemize}
+\end{exercicio}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

@@ -1,0 +1,199 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 5: Machine Learning (Regressão Linear)\\\large Conteúdo Teórico}
+\author{Tradução e Adaptação: The University of Helsinki MOOC Center}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}.
+
+\begin{objetivos}
+\begin{itemize}
+    \item Compreender o conceito de regressão linear.
+\end{itemize}
+\end{objetivos}
+
+\tableofcontents
+\newpage
+
+\section{Regressão Linear}
+
+A análise de regressão tenta explicar as relações entre variáveis. Uma dessas variáveis, chamada de variável dependente, é o que queremos "explicar" usando uma ou mais variáveis explicativas (ou independentes). Na regressão linear, assumimos que a variável dependente pode ser, aproximadamente, expressa como uma combinação linear das variáveis explicativas. 
+
+Como um exemplo simples, podemos ter a variável dependente "altura" e uma variável explicativa "idade". A idade de uma pessoa pode explicar muito bem a sua altura, e essa relação é aproximadamente linear para crianças (idades entre 1 e 16 anos). Outra forma de pensar sobre a regressão é ajustar uma curva aos pontos de dados observados. Se temos apenas uma variável explicativa, isso é fácil de visualizar, como veremos a seguir.
+
+Podemos aplicar a regressão linear facilmente com o pacote \texttt{scikit-learn}. Vamos analisar alguns exemplos.
+
+Primeiro, fazemos as importações padrão.
+\begin{lstlisting}
+import numpy as np
+import matplotlib.pyplot as plt
+import sklearn # Isso importa a biblioteca scikit-learn
+\end{lstlisting}
+
+Em seguida, criamos alguns dados com aproximadamente a relação $y = 2x + 1$, com erros normalmente distribuídos.
+\begin{lstlisting}
+np.random.seed(0)
+n = 20 # Numero de pontos de dados
+x = np.linspace(0, 10, n)
+y = x * 2 + 1 + 1 * np.random.randn(n) # Desvio padrao 1
+print(x)
+print(y)
+\end{lstlisting}
+
+O próximo passo é importar a classe \texttt{LinearRegression}.
+\begin{lstlisting}
+from sklearn.linear_model import LinearRegression
+\end{lstlisting}
+
+Agora podemos ajustar uma linha através dos pontos de dados $(x, y)$:
+\begin{lstlisting}
+model = LinearRegression(fit_intercept=True)
+model.fit(x[:, np.newaxis], y)
+xfit = np.linspace(0, 10, 100)
+yfit = model.predict(xfit[:, np.newaxis])
+plt.plot(xfit, yfit, color="black")
+plt.plot(x, y, 'o')
+# O codigo a seguir desenhara tantos segmentos de reta quantas forem as colunas nas matrizes x e y
+plt.plot(np.vstack((x, x)), np.vstack([y, model.predict(x[:, np.newaxis])]), color="red")
+\end{lstlisting}
+
+A regressão linear tenta minimizar a soma dos erros quadráticos:
+\[ \sum_{i}(y[i]-\hat{y}[i])^{2} \]
+que equivale à soma dos comprimentos ao quadrado dos segmentos de reta (que no exemplo estariam em vermelho) no gráfico traçado. Os valores estimados $\hat{y}[i]$ são denotados por \texttt{yfit[i]} no código acima.
+
+\begin{lstlisting}
+print("Parameters:", model.coef_, model.intercept_)
+print("Coefficient:", model.coef_[0])
+print("Intercept:", model.intercept_)
+\end{lstlisting}
+
+Neste caso, o \textit{coefficient} (coeficiente) é a inclinação da linha ajustada, e o \textit{intercept} (intercepto) é o ponto onde a linha ajustada intercepta o eixo y.
+
+Os parâmetros estimados pelo algoritmo de regressão costumam ser bem próximos dos parâmetros que geraram os dados (neste caso, coeficiente 2 e intercepto 1). 
+
+\section{Múltiplas Features (Variáveis Explicativas)}
+
+O exemplo anterior tinha apenas uma variável explicativa. Algumas vezes, isso é chamado de regressão linear simples. O próximo exemplo ilustra uma regressão mais complexa com múltiplas variáveis explicativas.
+
+\begin{lstlisting}
+sample1 = np.array([1, 2, 3]) # As tres variaveis explicativas tem valores 1, 2 e 3, respectivamente
+sample2 = np.array([4, 5, 6]) # Outro exemplo de valores das variaveis explicativas
+sample3 = np.array([7, 8, 10]) # ...
+
+# Para os valores 1, 2 e 3 das variaveis explicativas, o valor y=15 foi observado, e assim por diante.
+y = np.array([15, 39, 66]) + np.random.randn(3)
+\end{lstlisting}
+
+Vamos tentar ajustar um modelo linear a esses pontos:
+\begin{lstlisting}
+model2 = LinearRegression(fit_intercept=False)
+x = np.vstack([sample1, sample2, sample3])
+model2.fit(x, y)
+print(model2.coef_, model2.intercept_)
+\end{lstlisting}
+
+Vamos imprimir os vários componentes envolvidos.
+\begin{lstlisting}
+b = model2.coef_[:, np.newaxis]
+print("x:\n", x)
+print("b:\n", b)
+print("y:\n", y[:, np.newaxis])
+print("product:\n", np.matmul(x, b))
+\end{lstlisting}
+
+\section{Regressão Polinomial}
+
+Pode ser uma surpresa que é possível ajustar uma curva polinomial aos pontos de dados utilizando regressão linear. O truque é adicionar novas variáveis explicativas ao modelo. Abaixo, temos uma única feature $x$ com valores $y$ associados, dados por um polinômio de terceiro grau, com algum ruído (gaussiano) adicionado. Torna-se claro que não podemos explicar os dados bem com uma função linear, então adicionamos duas novas features: $x^2$ e $x^3$. O modelo linear encontrará os coeficientes para essas variáveis.
+
+\begin{lstlisting}
+x = np.linspace(-50, 150, 50)
+y = 0.15 * x**3 - 20 * x**2 + 5 * x - 4 + 5000 * np.random.randn(50)
+plt.scatter(x, y, color="black")
+
+model_linear = LinearRegression(fit_intercept=True)
+model_squared = LinearRegression(fit_intercept=True)
+model_cubic = LinearRegression(fit_intercept=True)
+
+x2 = x**2
+x3 = x**3
+
+model_linear.fit(np.vstack([x]).T, y)
+model_squared.fit(np.vstack([x, x2]).T, y)
+model_cubic.fit(np.vstack([x, x2, x3]).T, y)
+
+xf = np.linspace(-50, 150, 50)
+yf_linear = model_linear.predict(np.vstack([xf]).T)
+yf_squared = model_squared.predict(np.vstack([xf, xf**2]).T)
+yf_cubic = model_cubic.predict(np.vstack([xf, xf**2, xf**3]).T)
+
+plt.plot(xf, yf_linear, label="linear")
+plt.plot(xf, yf_squared, label="squared")
+plt.plot(xf, yf_cubic, label="cubic")
+plt.legend()
+
+print("Coefficients:", model_cubic.coef_)
+print("Intercept:", model_cubic.intercept_)
+\end{lstlisting}
+
+Variáveis lineares e ao quadrado não são suficientes para explicar os dados, mas a regressão linear consegue ajustar muito bem uma curva polinomial aos pontos de dados quando variáveis cúbicas são incluídas.
+
+\section{Resumo (Semana 5)}
+\begin{itemize}
+    \item \texttt{pd.concat} e \texttt{pd.merge} podem combinar dois DataFrames, mas a forma de combinação difere. A função \texttt{pd.concat} concatena com base nos índices, enquanto \texttt{pd.merge} combina com base no conteúdo de variáveis comuns.
+    \item A opção \texttt{join="outer"} no \texttt{pd.concat} pode criar valores ausentes, mas \texttt{join="inner"} não. O primeiro retorna a união dos índices, e o segundo, a intersecção.
+    \item No \texttt{pd.concat}, índices sobrepostos podem: causar um erro, renumeração de índices, ou criar índices hierárquicos.
+    \item O "merging" (mesclagem) pode unir elementos de um-para-um, um-para-muitos, ou muitos-para-muitos.
+    \item No agrupamento (grouping), um DataFrame é dividido em DataFrames menores. As principais operações nestes grupos são: aggregate, filter, transform (mantém o formato) e apply.
+    \item Series indexadas pelo tempo são chamadas de séries temporais (time series).
+    \item A regressão linear pode ser usada para descobrir relacionamentos lineares entre variáveis: pode ter mais de uma feature (variável explicativa) e ajustar polinômios ainda é considerado regressão linear.
+\end{itemize}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

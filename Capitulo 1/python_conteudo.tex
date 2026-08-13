@@ -1,42 +1,79 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[brazil]{babel}
+\usepackage[portuguese]{babel}
 \usepackage{geometry}
-\usepackage{xcolor}
-\usepackage{hyperref}
+\geometry{margin=2.5cm}
 \usepackage{listings}
-\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
 \usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
 \usepackage{booktabs}
-\geometry{margin=2.3cm}
-\lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible,frame=single,showstringspaces=false}
-\title{Data Analysis with Python 2024--2025\\Parte 1: Python\\\large Conteúdo Teórico}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 1: Python\\\large Conteúdo Teórico}
 \author{Tradução e Adaptação: Universidade de Helsinque (MOOC.fi)}
-\date{2026}
+\date{}
+
 \begin{document}
 \maketitle
 
 \section*{Nota Importante}
 Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}.
 
+\begin{objetivos}
+\begin{itemize}
+    \item Aprender os conceitos básicos da linguagem Python.
+    \item Compreender strings e módulos.
+    \item Trabalhar com sequências e objetos iteráveis.
+\end{itemize}
+\end{objetivos}
+
 \tableofcontents
 \newpage
-
-\section{O que você vai aprender}
-Esta parte apresenta os fundamentos de Python usados no restante do curso. Os objetivos são aprender os conceitos básicos da linguagem, compreender strings e módulos, e trabalhar com sequências e objetos iteráveis. 
 
 \section{Entrada e saída básicas}
 O programa clássico ``Hello, world!'' é extremamente simples em Python. A função \texttt{print()} envia texto para a saída padrão. Vários argumentos podem ser passados para \texttt{print}; por padrão, eles são separados por espaços. Expressões numéricas são avaliadas antes de serem impressas.
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}
 print("Hello world2!")
 print("Hello,", "John!", "How are you?")
 print(1, "plus", 2, "equals", 1+2)
 \end{lstlisting}
 
 A função \texttt{input()} permite ler texto digitado pelo usuário. O resultado de \texttt{input()} é uma string.
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}
 name = input("Give me your name: ")
 print("Hello,", name)
 \end{lstlisting}
@@ -44,7 +81,7 @@ print("Hello,", name)
 \subsection{Indentação}
 Python usa indentação para marcar blocos de código. Quatro espaços são uma convenção comum. Diferentemente de linguagens que usam chaves, o fim da indentação marca o fim do bloco.
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}
 for i in range(3):
     print("Hello")
 print("Bye!")
@@ -57,7 +94,7 @@ Uma atribuição associa um nome a um valor. Python não exige a declaração pr
 
 Os tipos básicos destacados neste material incluem \texttt{int}, \texttt{float}, \texttt{complex}, \texttt{str}, \texttt{bool} e \texttt{bytes}. A função \texttt{type()} permite descobrir o tipo do valor atual de um nome.
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}
 a = 1
 print(type(a))
 a = "algum texto"
@@ -76,7 +113,7 @@ Strings também podem ser escritas em múltiplas linhas usando aspas triplas. Em
 \subsection{Interpolação de strings}
 O material apresenta três formas: formatação tradicional, o método \texttt{format()} e f-strings. Atualmente, f-strings e \texttt{format()} são as formas mais usadas nos exemplos.
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}
 print("{} plus {} is equal to {}".format(1, 3, 4))
 print(f"{1} plus {3} is equal to {4}")
 print(f"{1.6:.1f} {1.7:.2f} {1.8:.3f}")
@@ -92,7 +129,7 @@ Uma instrução é um comando que produz um efeito. Atribuições e chamadas de 
 \section{Laços para tarefas repetitivas}
 Python possui principalmente os laços \texttt{while} e \texttt{for}. Um \texttt{while} repete enquanto uma condição for verdadeira.
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}
 i = 1
 while i*i < 1000:
     print("Square of", i, "is", i*i)
@@ -101,7 +138,7 @@ while i*i < 1000:
 
 O \texttt{for} percorre os elementos de um iterável. Listas e objetos criados por \texttt{range()} são exemplos.
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}
 s = 0
 for i in [0,1,2,3,4,5,6,7,8,9]:
     s += i
@@ -111,7 +148,7 @@ print("The sum is", s)
 \section{Decisões com if}
 A estrutura \texttt{if/elif/else} seleciona blocos de acordo com condições booleanas.
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}
 x = int(input("Give an integer: "))
 if x >= 0:
     a = x
@@ -126,9 +163,9 @@ print("The absolute value of %i is %i" % (x, a))
 \section{Funções}
 Funções são declaradas com \texttt{def}. Uma função pode possuir parâmetros, retornar um valor e conter uma docstring descrevendo sua finalidade.
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}
 def double(x):
-    """Multiplica o argumento por dois."""
+    # Multiplica o argumento por dois.
     return x*2
 
 print(double(4))
@@ -177,7 +214,7 @@ Funções podem ser tratadas como objetos de primeira classe: podem ser passadas
 \subsection{map e lambda}
 \texttt{map()} aplica uma função a cada elemento e devolve um iterável. Em Python moderno, é comum convertê-lo explicitamente em lista quando se deseja visualizar ou armazenar os resultados.
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}
 def double(x):
     return 2*x
 L = [12, 4, -1]
@@ -185,7 +222,7 @@ print(list(map(double, L)))
 \end{lstlisting}
 
 Uma \texttt{lambda} define uma pequena função sem nome.
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}
 L = [2, 3, 5]
 print(list(map(lambda x: 2*x+x**2, L)))
 \end{lstlisting}
@@ -229,7 +266,7 @@ Pacotes são módulos que podem conter outros módulos e subpacotes. A hierarqui
 \subsection{Conteúdo de um módulo}
 Atribuições, classes e funções definidas em um arquivo tornam-se atributos do módulo. O atributo \texttt{\_\_name\_\_} vale \texttt{"\_\_main\_\_"} quando o arquivo é executado diretamente. Isso permite usar o padrão:
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}
 def main():
     for _ in range(3):
         print("Hello")

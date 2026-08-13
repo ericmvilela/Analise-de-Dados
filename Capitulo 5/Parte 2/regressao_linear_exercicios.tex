@@ -1,0 +1,124 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 5: Machine Learning (Regressão Linear)\\\large Caderno de Exercícios}
+\author{Tradução e Adaptação: The University of Helsinki MOOC Center}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}.
+
+\tableofcontents
+\newpage
+
+\section{Exercícios - Regressão Linear}
+
+\subsection*{Exercício 5.10 -- Regressão Linear}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Parte 1:} Escreva uma função \texttt{fit\_line} que receba arrays unidimensionais \texttt{x} e \texttt{y} como parâmetros. A função deve retornar a tupla \texttt{(slope, intercept)} da linha ajustada (inclinação e intercepto). Escreva um programa principal (main) que teste a função \texttt{fit\_line} com alguns arrays de exemplo. A função principal deve produzir uma saída no seguinte formato:
+    \begin{verbatim}
+    Slope: 1.0
+    Intercept: 1.16666666667
+    \end{verbatim}
+    \item \textbf{Parte 2:} Modifique sua função principal para plotar a linha ajustada usando \texttt{matplotlib}, além da saída textual. Plote também os pontos de dados originais.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 5.11 -- Dados Misteriosos (Mystery Data)}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Leia o arquivo separado por tabulações \texttt{mystery\_data.tsv}. Suas primeiras cinco colunas definem as features (variáveis explicativas) e a última coluna é a resposta. Use o \texttt{LinearRegression} do \texttt{scikit-learn} para ajustar esses dados.
+    \item Implemente a função \texttt{mystery\_data} que leia este arquivo, aprenda o modelo e retorne os coeficientes de regressão para as cinco features. Você não precisa ajustar o intercepto (\texttt{fit\_intercept=False}). O método principal (main) deve imprimir a saída no seguinte formato:
+    \begin{verbatim}
+    Coefficient of X1 is ...
+    Coefficient of X2 is ...
+    Coefficient of X3 is ...
+    Coefficient of X4 is ...
+    Coefficient of X5 is ...
+    \end{verbatim}
+    \item \textit{Pergunta para reflexão:} Quais features você acha que são necessárias para explicar a resposta Y?
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 5.12 -- Coeficiente de Determinação (R2)}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Usando os mesmos dados do exercício anterior, ao invés de imprimir os coeficientes de regressão, imprima o coeficiente de determinação ($R^2$). O coeficiente de determinação diz o quão bem a regressão linear ajusta os dados (o valor máximo é 1).
+    \item \textbf{Parte 1:} Usando todas as features (X1 até X5), ajuste os dados utilizando uma regressão linear (inclua o intercepto). Obtenha o coeficiente de determinação usando o método \texttt{score} da classe \texttt{LinearRegression}. Escreva uma função \texttt{coefficient\_of\_determination} para fazer isso. Ela deve retornar uma lista contendo o valor do score R2 como único elemento.
+    \item \textbf{Parte 2:} Estenda a sua função para que ela também retorne os scores R2 relacionados à regressão linear de cada feature individualmente. A função deve retornar uma lista com seis valores de score R2 (o primeiro para as cinco features, seguido por um para cada feature isolada). A saída principal deve ser semelhante a:
+    \begin{verbatim}
+    R2-score with feature(s) X: ...
+    R2-score with feature(s) X1: ...
+    R2-score with feature(s) X2: ...
+    R2-score with feature(s) X3: ...
+    R2-score with feature(s) X4: ...
+    R2-score with feature(s) X5: ...
+    \end{verbatim}
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 5.13 -- O Clima de Ciclismo Continua}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{cycling\_weather\_continues} que tenta explicar, usando regressão linear, a contagem de uma estação de medição de ciclismo usando os dados climáticos do dia correspondente.
+    \item A função deve receber o nome da estação de medição como parâmetro e retornar os coeficientes de regressão e o \textit{score}.
+    \item Leia o dataset de clima e o dataset de ciclismo da pasta \texttt{src}. Restrinja os dados de ciclismo ao ano de 2017. Obtenha a soma das contagens de ciclismo de cada dia. Mescle os dois datasets usando ano, mês e dia. Após isso, use "forward fill" (\texttt{ffill}) para preencher valores ausentes.
+    \item Na regressão linear, use as variáveis explicativas: \texttt{'Precipitation amount (mm)'}, \texttt{'Snow depth (cm)'} e \texttt{'Air temperature (degC)'}. A variável dependente é a estação informada no parâmetro. Ajuste também o intercepto.
+    \item A saída do programa principal deve seguir o formato (com 1 casa decimal para os coeficientes e 2 para o score):
+    \begin{verbatim}
+    Measuring station: XX
+    Regression coefficient for variable 'precipitation': X.X
+    Regression coefficient for variable 'snow depth': X.X
+    Regression coefficient for variable 'temperature': X.X
+    Score: X.XX
+    \end{verbatim}
+\end{itemize}
+\end{exercicio}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

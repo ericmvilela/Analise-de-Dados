@@ -1,0 +1,80 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 3: Mais NumPy\\\large Caderno de Exercícios}
+\author{Tradução e Adaptação: The University of Helsinki MOOC Center}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}.
+
+\tableofcontents
+\newpage
+
+\section{Exercícios - Capítulo 3}
+
+\subsection*{Exercício 3.11 -- para tons de cinza (\textit{to grayscale})}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Parte 1:} Escreva uma função \texttt{to\_grayscale} que receba uma imagem RGB (array tridimensional) e retorne uma imagem bidimensional em tons de cinza. A conversão para tons de cinza deve ser feita através de uma soma ponderada dos valores vermelho, verde e azul, e usar isso como o valor de cinza. O primeiro eixo é x, o segundo é y, e o terceiro são os componentes de cor (vermelho, verde, azul). Use os pesos 0.2126, 0.7152 e 0.0722 para vermelho, verde e azul, respectivamente. Esses pesos existem porque o olho humano é mais sensível à cor verde e menos sensível à cor azul. Na função \texttt{main}, você pode, por exemplo, usar a imagem fornecida \texttt{src/painting.png}. Exiba a imagem em tons de cinza com a função \texttt{plt.imshow}. Pode ser necessário chamar a função \texttt{plt.gray} para definir a paleta de cores (colormap) como cinza. (Veja \texttt{help(plt.colormaps)} para mais informações sobre colormaps).
+    \item \textbf{Parte 2:} Escreva as funções \texttt{to\_red}, \texttt{to\_green} e \texttt{to\_blue} que recebem um array tridimensional como parâmetro e retornam um array tridimensional. Por exemplo, a função \texttt{to\_red} deve zerar os componentes de cor verde e azul e retornar o resultado. Na função \texttt{main}, crie uma figura com três subfiguras: a de cima deve ser a imagem vermelha, a do meio a imagem verde e a de baixo a imagem azul.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 3.12 -- desvanecimento radial (\textit{radial fade})}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Faça um programa que aplique um desvanecimento (\textit{fading}) em uma imagem como visto anteriormente, mas agora não na direção horizontal, e sim na direção radial. À medida que nos afastamos do centro da imagem, os pixels desvanecem para o preto.
+    \item \textbf{Parte 1:} Escreva a função \texttt{center} que retorna o par de coordenadas \texttt{(center\_y, center\_x)} do centro da imagem. Observe que essas coordenadas podem não ser inteiras. A função deve funcionar tanto para imagens bidimensionais quanto para tridimensionais (ou seja, imagens em tons de cinza e coloridas). Escreva também a função \texttt{radial\_distance} que retorna para uma imagem com largura $w$ e altura $h$ um array com forma $(h,w)$, onde o número no índice $(i,j)$ informa a distância euclidiana do ponto $(i,j)$ até o centro da imagem.
+    \item \textbf{Parte 2:} Crie a função \texttt{scale(a, tmin=0.0, tmax=1.0)} que retorna uma cópia do array \texttt{a} com seus elementos escalados para estarem no intervalo \texttt{[tmin, tmax]}. Usando as funções \texttt{radial\_distance} e \texttt{scale}, escreva a função \texttt{radial\_mask} que recebe uma imagem como parâmetro e retorna um array com a mesma altura e largura preenchido com valores entre 0.0 e 1.0. Faça isso usando a função \texttt{scale}. Para fazer com que os valores do array resultante perto do centro do array fiquem próximos a 1 e mais perto das bordas fiquem próximos a 0, subtraia o array anterior de 1. Escreva também a função \texttt{radial\_fade} que retorna a imagem multiplicada por sua máscara radial. Teste suas funções na função \texttt{main}, que deve criar, usando o matplotlib, uma figura que tenha três subfiguras empilhadas verticalmente. No topo, a imagem original (\texttt{painting.png}), no meio, a máscara, e na parte inferior, a imagem com desvanecimento.
+\end{itemize}
+\end{exercicio}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

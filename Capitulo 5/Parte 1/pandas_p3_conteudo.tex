@@ -1,0 +1,210 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 5: Pandas (Parte 3)\\\large Conteúdo Teórico}
+\author{Tradução e Adaptação: The University of Helsinki MOOC Center}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}.
+
+\begin{objetivos}
+\begin{itemize}
+    \item Aprender a concatenar datasets.
+    \item Saber como mesclar (merge) DataFrames.
+    \item Saber como dividir um DataFrame em grupos.
+    \item Compreender séries temporais (time series).
+\end{itemize}
+\end{objetivos}
+
+\tableofcontents
+\newpage
+
+\section{Concatenando Datasets}
+
+Já vimos na seção sobre NumPy como podemos concatenar arrays ao longo de um eixo: \texttt{axis=0} concatena verticalmente e \texttt{axis=1} concatena horizontalmente, e assim por diante. Com DataFrames do Pandas, funciona de maneira similar, exceto que os índices das linhas e os nomes das colunas exigem atenção extra. Note também uma pequena diferença no nome: no NumPy é \texttt{np.concatenate}, mas no Pandas é \texttt{pd.concat}.
+
+Vamos começar considerando a concatenação ao longo do eixo 0 (concatenação vertical). Primeiro, faremos uma função auxiliar para criar facilmente DataFrames para testes.
+
+\begin{lstlisting}
+import pandas as pd
+import numpy as np
+
+def makedf(cols, ind):
+    data = {c: [str(c) + str(i) for i in ind] for c in cols}
+    return pd.DataFrame(data, ind)
+\end{lstlisting}
+
+A seguir, vamos criar alguns DataFrames de exemplo:
+
+\begin{lstlisting}
+a = makedf("AB", [0, 1])
+b = makedf("AB", [2, 3])
+c = makedf("CD", [0, 1])
+d = makedf("BC", [2, 3])
+\end{lstlisting}
+
+No caso simples a seguir, a função \texttt{concat} funciona exatamente como esperaríamos:
+\begin{lstlisting}
+pd.concat([a, b]) # O eixo padrao e 0
+\end{lstlisting}
+
+No entanto, o código a seguir criará índices duplicados:
+\begin{lstlisting}
+r = pd.concat([a, a])
+r.loc[0, "A"] # Retorna duas linhas
+\end{lstlisting}
+
+Isso geralmente não é o que queremos! Existem três soluções para isso. A primeira é proibir a criação de índices duplicados passando o parâmetro \texttt{verify\_integrity} para a função \texttt{concat}:
+\begin{lstlisting}
+try:
+    pd.concat([a, a], verify_integrity=True)
+except ValueError as e:
+    import sys
+    print(e, file=sys.stderr)
+\end{lstlisting}
+
+A segunda opção é solicitar a renumeração automática das linhas:
+\begin{lstlisting}
+pd.concat([a, a], ignore_index=True)
+\end{lstlisting}
+
+A terceira é usar indexação hierárquica. O Pandas permite múltiplos níveis de índice (embora não entraremos em detalhes profundos aqui).
+\begin{lstlisting}
+r2 = pd.concat([a, a], keys=['first', 'second'])
+r2["A"]["first"][0] # Acesso a um elemento
+\end{lstlisting}
+
+Tudo funciona de forma semelhante quando queremos concatenar horizontalmente:
+\begin{lstlisting}
+pd.concat([a, c], axis=1)
+\end{lstlisting}
+
+Até agora assumimos que, ao concatenar verticalmente, as colunas de ambos os DataFrames são as mesmas e, ao unir horizontalmente, os índices são os mesmos. Isso, entretanto, não é obrigatório. Quando as colunas não batem, o \texttt{concat} as expande com \texttt{NaN}s (um \textbf{outer join} ou união):
+\begin{lstlisting}
+pd.concat([a, d], sort=False) 
+\end{lstlisting}
+
+A alternativa é um \textbf{inner join} (intersecção), que mantém apenas as colunas em comum:
+\begin{lstlisting}
+pd.concat([a, d], join="inner")
+\end{lstlisting}
+
+\section{Mesclando DataFrames (Merge)}
+
+A mesclagem (merge) combina dois DataFrames com base em algum campo comum.
+Lembremos do DataFrame sobre salários e idades de pessoas:
+
+\begin{lstlisting}
+df = pd.DataFrame([[1000, "Jack", 21], [1500, "John", 29]], columns=["Wage", "Name", "Age"])
+df2 = pd.DataFrame({"Name": ["John", "Jack"], "Occupation": ["Plumber", "Carpenter"]})
+\end{lstlisting}
+
+A chamada a seguir mesclará os dois DataFrames no campo em comum (\texttt{Name}) e, mais importante, manterá os índices alinhados. Isso significa que, mesmo que os nomes estejam em ordens diferentes nas duas tabelas, o \texttt{merge} ainda dará o resultado correto.
+
+\begin{lstlisting}
+pd.merge(df, df2)
+\end{lstlisting}
+
+Isso foi um exemplo de um merge "um-para-um" simples, onde as chaves na coluna \texttt{Name} tinham uma correspondência exata de 1 para 1. Às vezes, nem todas as chaves aparecem em ambos os DataFrames. Por padrão, \texttt{pd.merge} faz um \textbf{inner join} (mantém apenas as linhas com chaves presentes em ambas as tabelas). Para manter todas as linhas e preencher as faltantes com \texttt{NaN}, usamos \texttt{how="outer"}:
+
+\begin{lstlisting}
+df3 = pd.concat([df2, pd.DataFrame({"Name": ["James"], "Occupation": ["Painter"]})], ignore_index=True)
+pd.merge(df, df3, how="outer")
+\end{lstlisting}
+
+Muitas vezes, relações de "muitos-para-um" ou "muitos-para-muitos" ocorrem nas mesclagens. Nesses casos, todas as combinações de chaves correspondentes são geradas (produto cartesiano para as chaves idênticas).
+
+\section{Agregações e Agrupamentos (Groupby)}
+
+O Pandas possui uma operação que divide um DataFrame em grupos, realiza alguma operação em cada grupo e, em seguida, combina os resultados em um DataFrame final. Essa funcionalidade de \textit{split-apply-combine} é muito flexível. Inicia-se chamando o método \texttt{groupby}.
+
+\begin{lstlisting}
+wh = pd.read_csv("https://raw.githubusercontent.com/csmastersUH/data_analysis_with_python_2020/master/kumpula-weather-2017.csv")
+wh3 = wh.rename(columns={"m": "Month", "d": "Day", "Precipitation amount (mm)": "Precipitation", "Snow depth (cm)": "Snow", "Air temperature (degC)": "Temperature"})
+
+groups = wh3.groupby("Month")
+\end{lstlisting}
+
+Nada acontece imediatamente (é uma operação "preguiçosa"). O objeto \texttt{groupby} sabe como a divisão é feita. Podemos iterar sobre os grupos ou obter um grupo específico usando \texttt{groups.get\_group(2)}.
+Para aplicar operações, como a média ou a soma em colunas específicas:
+
+\begin{lstlisting}
+groups["Temperature"].mean()
+wh3.groupby("Month")["Precipitation"].sum()
+\end{lstlisting}
+
+\subsection{Outras formas de operar em grupos}
+Além das agregações, podemos \textbf{filtrar}, \textbf{transformar} ou \textbf{aplicar} funções genéricas.
+\begin{itemize}
+    \item \textbf{Filter:} Filtra grupos baseando-se em uma função que retorna um booleano.
+    \item \textbf{Transform:} Manipula cada DataFrame de grupo mantendo seu formato original (ex: subtrair a média do mês de cada temperatura diária).
+    \item \textbf{Apply:} Muito genérico; requer apenas que a função fornecida retorne um DataFrame, uma Series ou um escalar para o grupo.
+\end{itemize}
+
+\section{Séries Temporais (Time Series)}
+
+Se uma medição é feita em determinados pontos no tempo, os valores resultantes junto com os tempos de medição compõem uma série temporal. No Pandas, uma Series ou DataFrame cujo índice é composto por datas/horas é uma série temporal.
+
+Podemos converter colunas de Ano, Mês e Dia em um campo \texttt{datetime} e defini-lo como o índice:
+
+\begin{lstlisting}
+wh2 = wh3.copy()
+wh2["Date"] = pd.to_datetime(wh2[["Year", "Month", "Day"]])
+wh2 = wh2.set_index("Date")
+\end{lstlisting}
+
+Com um \texttt{DatetimeIndex}, podemos facilmente obter fatias (slices) por datas:
+\begin{lstlisting}
+wh2["2017-01-15":"2017-02-03"]
+\end{lstlisting}
+
+Podemos também criar conjuntos complexos de datas (como "todas as segundas-feiras" ou "apenas dias úteis") usando \texttt{pd.date\_range}, e usar esses conjuntos para filtrar os dados através do atributo \texttt{loc}. O método \texttt{rolling} é útil em séries temporais para suavizar gráficos criando médias móveis.
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

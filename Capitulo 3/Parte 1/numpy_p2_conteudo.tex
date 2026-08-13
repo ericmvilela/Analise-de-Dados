@@ -1,0 +1,232 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 3: NumPy (Parte 2)\\\large Conteúdo Teórico}
+\author{Tradução e Adaptação: The University of Helsinki MOOC Center}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}.
+
+\begin{objetivos}
+\begin{itemize}
+    \item Aprender a comparar, criar máscaras, indexar e ordenar arrays.
+    \item Entender como usar o NumPy para multiplicação de matrizes e para resolver sistemas de equações lineares.
+\end{itemize}
+\end{objetivos}
+
+\tableofcontents
+\newpage
+
+\section{Comparações e máscaras}
+
+Assim como o NumPy permite operações aritméticas elemento a elemento entre arrays, como a soma de dois arrays, também é possível comparar dois arrays elemento a elemento.
+
+\begin{lstlisting}
+import numpy as np
+
+a = np.array([1,3,4])
+b = np.array([2,2,7])
+c = a < b
+print(c)
+print(c.all()) # todas as comparacoes foram True?
+print(c.any()) # alguma comparacao foi True?
+print(np.sum(c))
+print(a > 0)
+\end{lstlisting}
+
+A comparação produz um array booleano, por exemplo \texttt{[True, False, True]}. O método \texttt{all()} verifica se todos os elementos são verdadeiros, enquanto \texttt{any()} verifica se pelo menos um é verdadeiro. Como \texttt{True} equivale a 1 e \texttt{False} a 0 em operações numéricas, \texttt{np.sum(c)} conta quantas comparações foram verdadeiras.
+
+As regras de \textit{broadcasting} também se aplicam às comparações.
+
+\subsection{Exemplo com dados meteorológicos}
+
+Para experimentar essas operações com dados reais, o material carrega estatísticas meteorológicas da estação Kumpula, em Helsinque. São usadas as temperaturas médias diárias do ano de 2017. O Pandas é utilizado apenas para carregar o arquivo de dados.
+
+\begin{lstlisting}
+import pandas as pd
+
+a = pd.read_csv("https://raw.githubusercontent.com/csmastersUH/data_analysis_with_python_2020/master/kumpula-weather-2017.csv")["Air temperature (degC)"].values
+
+print("Number of days with the temperature below zero", np.sum(a < 0))
+print(np.sum((0 < a) & (a < 10)))
+\end{lstlisting}
+
+No conjunto de dados apresentado, há 49 dias abaixo de zero. Para arrays booleanos, usamos os operadores elemento a elemento \texttt{\&}, \texttt{|} e \texttt{\~{}}, correspondentes, respectivamente, a "e", "ou" e "não". Os parênteses das comparações são importantes porque a precedência de \texttt{\&} é maior do que a de \texttt{<}.
+
+Uma máscara booleana também pode selecionar um subconjunto do array:
+
+\begin{lstlisting}
+c = a > 0
+print(c[:10])
+print(a[c])
+\end{lstlisting}
+
+Essa operação é chamada de \textit{masking} (mascaramento). A máscara também pode ser usada para atribuir valores:
+
+\begin{lstlisting}
+a[~c] = 0
+print(a)
+\end{lstlisting}
+
+No exemplo, todas as temperaturas negativas são substituídas por zero.
+
+\section{Indexação avançada (fancy indexing)}
+
+Com indexação simples podemos obter um único elemento de um array. Para obter vários elementos, que não precisam ser contíguos, podemos fornecer uma lista de índices.
+
+\begin{lstlisting}
+np.random.seed(0)
+a = np.random.randint(0, 20, 20)
+a2 = np.array([a[2], a[5], a[7]])
+print(a)
+print(a2)
+
+idx = [2, 5, 7]
+print(a[idx])
+print(a[[2, 5, 7]])
+
+a[idx] = -1
+print(a)
+\end{lstlisting}
+
+A indexação avançada também funciona em arrays de dimensões maiores. Em um array bidimensional, é possível fornecer dois arrays de índices, um para as linhas e outro para as colunas. O \textit{shape} do resultado é determinado pelo \textit{shape} dos arrays de índices, e não pelo \textit{shape} do array original.
+
+O \textit{broadcasting} pode ser combinado com a indexação avançada para evitar repetições:
+
+\begin{lstlisting}
+b = np.arange(16).reshape(4, 4)
+row = np.array([0, 2])
+col = np.array([1, 3])
+
+row2 = row.reshape(2, 1)
+col2 = col.reshape(1, 2)
+
+print(b[row2, col2])
+print(b[:, [0, 2]])
+\end{lstlisting}
+
+\section{Ordenação de arrays}
+
+Há duas formas principais de ordenar arrays unidimensionais. \texttt{np.sort(a)} retorna um novo array ordenado e não modifica o argumento. Já \texttt{a.sort()} modifica o próprio array.
+
+\begin{lstlisting}
+a = np.array([2, 1, 4, 3, 5])
+print(np.sort(a))
+print(a)
+a.sort()
+print(a)
+\end{lstlisting}
+
+Em arrays multidimensionais, o parâmetro \texttt{axis} define se queremos ordenar cada coluna ou cada linha:
+
+\begin{lstlisting}
+b = np.random.randint(0, 10, (4, 4))
+print(np.sort(b, axis=0)) # cada coluna
+print(np.sort(b, axis=1)) # cada linha
+\end{lstlisting}
+
+Cada linha ou coluna é ordenada independentemente.
+
+Uma operação relacionada é \texttt{np.argsort}. Em vez de ordenar os valores, ela retorna os índices que colocariam os valores em ordem.
+
+\begin{lstlisting}
+a = np.array([23, 12, 47, 35, 59])
+idx = np.argsort(a)
+print("Array a:", a)
+print("Indices:", idx)
+print(a[idx])
+\end{lstlisting}
+
+No exemplo, os índices indicam a ordem dos elementos: o menor valor está na posição 1, o segundo menor na posição 0, o terceiro na posição 3, e assim por diante.
+
+\section{Operações matriciais}
+
+O operador \texttt{*} do NumPy corresponde ao produto elemento a elemento. Muitas vezes, porém, queremos a multiplicação matricial.
+
+Se A tem \textit{shape} $n \times k$ e B tem \textit{shape} $k \times m$, o produto matricial $C = AB$ tem \textit{shape} $n \times m$, com
+\[ C_{ij} = \sum_{h=1}^{k} a_{ih}b_{hj} \]
+
+No NumPy, podemos usar \texttt{np.matmul} ou o operador \texttt{@}.
+
+\begin{lstlisting}
+np.random.seed(0)
+a = np.random.randint(0, 10, (3, 2))
+b = np.random.randint(0, 10, (2, 4))
+c = np.matmul(a, b)
+print(c)
+print(a @ b)
+\end{lstlisting}
+
+Para o produto matricial ser definido, as dimensões internas das matrizes precisam ser compatíveis. Assim, uma tentativa como \texttt{a @ a}, quando as dimensões não forem compatíveis, produzirá um erro.
+
+\subsection{Matriz inversa}
+
+Para uma matriz invertível, podemos calcular a inversa com \texttt{np.linalg.inv}. Se $A^{-1}$ é a inversa de A, os produtos $A A^{-1}$ e $A^{-1} A$ devem ser aproximadamente a matriz identidade. Pequenos valores numéricos próximos de zero podem aparecer devido à aritmética de ponto flutuante.
+
+\begin{lstlisting}
+s = np.array([[1, 6, 7], [7, 8, 1], [5, 9, 8]])
+s_inv = np.linalg.inv(s)
+print("Original matrix:\n", s)
+print("Inverted matrix:\n", s_inv)
+print("Matrix product:\n", s @ s_inv)
+print("Matrix product the other way:\n", s_inv @ s)
+\end{lstlisting}
+
+Também podemos transformar um vetor com uma matriz e depois aplicar a inversa para recuperar o vetor original.
+
+\section{Resolução de sistemas de equações lineares}
+
+O NumPy fornece \texttt{np.linalg.solve} para resolver sistemas de equações lineares. A função recebe a matriz de coeficientes e o vetor dos termos constantes.
+
+Um sistema geral pode ser escrito como
+\[ Ax = b \]
+onde A contém os coeficientes, x é o vetor de incógnitas e b contém os termos do lado direito. No formato descrito no material, A possui \textit{shape} (n, m), x possui \textit{shape} (m, 1) e b possui \textit{shape} (n, 1).
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

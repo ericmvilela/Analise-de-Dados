@@ -1,0 +1,287 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 5: Pandas (DataFrames na Prática)\\\large Conteúdo Teórico}
+\author{Tradução e Adaptação: The University of Helsinki MOOC Center}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}.
+
+\begin{objetivos}
+\begin{itemize}
+    \item Aprender os principais conceitos para trabalhar com DataFrames da biblioteca Pandas.
+    \item Saber como criar DataFrames, acessar linhas e colunas e obter estatísticas descritivas.
+    \item Aprender a lidar com valores ausentes.
+    \item Entender como converter e manipular colunas de texto.
+\end{itemize}
+\end{objetivos}
+
+\tableofcontents
+\newpage
+
+\section{O que é um DataFrame}
+
+Um DataFrame é a estrutura central da biblioteca pandas para representar dados tabulares: uma grade retangular com linhas e colunas, parecida com uma planilha ou uma tabela de banco de dados. Cada coluna pode ter seu próprio tipo de dado (números inteiros, números decimais, texto, datas, etc.), e tanto as linhas quanto as colunas possuem um índice que permite identificá-las.
+
+Antes de mais nada, os módulos costumam ser importados assim:
+\begin{lstlisting}
+import pandas as pd
+import numpy as np
+\end{lstlisting}
+
+Existem três formas comuns de construir um DataFrame do zero: a partir de uma matriz do NumPy, a partir de um conjunto de colunas, ou a partir de um conjunto de linhas.
+
+\subsection{Construindo a partir de uma matriz NumPy}
+
+Quando já temos os dados organizados em uma matriz bidimensional, basta informar os nomes das colunas e das linhas (opcionalmente):
+\begin{lstlisting}
+notas = pd.DataFrame(
+    np.random.randn(3, 2),
+    columns=["Prova1", "Prova2"],
+    index=["Ana", "Bruno", "Carla"]
+)
+notas
+\end{lstlisting}
+
+O resultado é uma tabela de 3 linhas por 2 colunas, em que cada linha corresponde a um estudante e cada coluna a uma prova. Os rótulos das linhas podem ser consultados com \texttt{notas.index}, e os das colunas com \texttt{notas.columns}. Quando esses parâmetros não são informados, o pandas atribui automaticamente índices inteiros sequenciais (um objeto do tipo RangeIndex, semelhante ao \texttt{range} nativo do Python).
+
+\subsection{Construindo a partir de colunas}
+
+Uma coluna pode vir de uma lista comum, de um vetor NumPy ou de uma Series do pandas. Quando usamos uma Series, o atributo name dela pode ser aproveitado como nome da coluna:
+\begin{lstlisting}
+idades = pd.Series([23, 31, 40], name="idade")
+pd.DataFrame(idades)
+\end{lstlisting}
+
+Para combinar várias colunas de uma vez, a forma mais natural é usar um dicionário, em que cada chave vira o nome de uma coluna:
+\begin{lstlisting}
+salarios = pd.Series([3200, 4100, 5300])
+cidades = pd.Series(["Recife", "Curitiba", "Belém"])
+pd.DataFrame({"salario": salarios, "cidade": cidades})
+\end{lstlisting}
+
+\subsection{Construindo a partir de linhas}
+
+Também é possível passar uma lista de linhas ao construtor. Cada linha pode ser um dicionário, uma lista, uma Series ou um vetor NumPy. Se as linhas forem dicionários, as chaves definem automaticamente os nomes das colunas:
+\begin{lstlisting}
+funcionarios = pd.DataFrame([
+    {"nome": "Marina", "cargo": "Engenheira", "salario": 7800},
+    {"nome": "Diego", "cargo": "Analista", "salario": 5200}
+])
+\end{lstlisting}
+
+Alternativamente, quando as linhas são listas simples (sem chaves), os nomes das colunas devem ser informados explicitamente pelo parâmetro columns:
+\begin{lstlisting}
+funcionarios = pd.DataFrame(
+    [[7800, "Marina", "Engenheira"], [5200, "Diego", "Analista"]],
+    columns=["salario", "nome", "cargo"]
+)
+\end{lstlisting}
+
+Um detalhe importante: quando construímos um DataFrame a partir de um dicionário de colunas, a ordem das colunas no resultado segue a ordem das chaves do dicionário nas versões atuais do Python e do pandas. Do ponto de vista da informação contida na tabela, a ordem das colunas é irrelevante -- mas frequentemente escolhemos uma ordem específica para tornar a leitura mais natural ou para seguir alguma convenção do domínio dos dados.
+
+\section{Acessando linhas e colunas}
+
+\subsection{O comportamento dos colchetes}
+
+Diferentemente de uma matriz NumPy, o operador de colchetes \texttt{[]} em um DataFrame não aceita diretamente um par de índices (linha, coluna). Apenas uma dimensão pode ser especificada de cada vez -- mas qual dimensão, exatamente, depende do tipo do valor usado dentro dos colchetes:
+\begin{itemize}
+    \item Se for um nome de coluna (ou uma lista de nomes), os colchetes selecionam colunas.
+    \item Se for um inteiro, o comportamento só funciona quando esse inteiro é, de fato, um rótulo explícito de alguma coluna -- caso contrário, ocorre um erro.
+    \item Se for uma fatia (slice) ou uma máscara booleana, os colchetes selecionam linhas.
+\end{itemize}
+
+Veja o exemplo com a tabela de funcionários criada acima:
+\begin{lstlisting}
+funcionarios["nome"]                   # seleciona a coluna "nome" -> Series
+funcionarios[["nome", "cargo"]]        # seleciona duas colunas -> DataFrame
+funcionarios[0:1]                      # seleciona a primeira linha (fatia)
+funcionarios[funcionarios.salario > 6000] # linhas com salário alto
+\end{lstlisting}
+
+Se uma dessas operações devolve uma Series, ainda é possível encadear um segundo colchete para chegar a um valor individual:
+\begin{lstlisting}
+funcionarios["salario"][1]   # repare na ordem: coluna, depois linha
+# 5200
+\end{lstlisting}
+
+Essa forma encadeada funciona, mas não é recomendada como prática geral, especialmente quando combinada com atribuição de valores, pois pode gerar avisos ou comportamentos inesperados no pandas. A seção seguinte apresenta uma alternativa mais clara.
+
+\subsection{Os atributos loc e iloc}
+
+Para evitar a ambiguidade descrita acima, o pandas oferece dois atributos de indexação com um comportamento previsível e uniforme:
+\begin{itemize}
+    \item \texttt{loc}: usa os rótulos explícitos (os nomes que aparecem em \texttt{index} e \texttt{columns}).
+    \item \texttt{iloc}: usa posições inteiras implícitas, exatamente como acontece com arrays NumPy.
+\end{itemize}
+
+Em ambos os casos, a primeira posição dentro dos colchetes refere-se a linhas, e a segunda, a colunas -- a mesma ordem usada pelo NumPy.
+
+\begin{lstlisting}
+funcionarios.loc[1, "salario"]   # valor na linha de rótulo 1, coluna "salario"
+funcionarios.iloc[-1, -1]        # último valor da última linha (canto inferior direito)
+funcionarios.loc[1, ["nome", "salario"]] # múltiplas colunas para uma linha
+\end{lstlisting}
+
+Com \texttt{iloc}, todas as técnicas de indexação do NumPy funcionam normalmente: índices únicos, fatias, listas de posições (\textit{fancy indexing}) e máscaras booleanas. Com \texttt{loc}, a lógica é a mesma, mas usando os rótulos em vez de posições.
+
+Uma boa prática é preferir \texttt{loc} e \texttt{iloc} sempre que o objetivo for selecionar um elemento específico ou um subconjunto bem definido de linhas e colunas simultaneamente, deixando os colchetes simples para os casos mais triviais (uma coluna, ou um filtro por condição).
+
+\section{Visão geral e estatísticas descritivas}
+
+Uma vez que os dados estão carregados em um DataFrame, o próximo passo natural é obter um panorama rápido do seu conteúdo. O método \texttt{describe()} calcula, para cada coluna numérica, um conjunto de estatísticas-resumo (contagem, média, desvio padrão, mínimo, quartis e máximo) e devolve tudo isso organizado em um novo DataFrame:
+\begin{lstlisting}
+clima = pd.read_csv("temperaturas_recife_2023.csv")
+clima.describe()
+\end{lstlisting}
+
+Esse método é uma das primeiras ferramentas usadas na fase de análise exploratória, pois ajuda a identificar rapidamente problemas como valores fora da escala esperada, colunas quase constantes ou grande variabilidade nos dados.
+
+Também é possível calcular estatísticas isoladas, como a média de cada coluna, usando \texttt{mean()}. Por padrão, essas agregações são feitas ao longo das linhas, produzindo um resultado por coluna -- exatamente como ocorre com as funções equivalentes do NumPy:
+\begin{lstlisting}
+clima_numerico = clima.drop(columns=["ano", "mes", "dia"])
+clima_numerico.mean()
+\end{lstlisting}
+
+\section{Valores ausentes}
+
+É comum que conjuntos de dados reais tenham medições faltando -- um sensor que falhou em um determinado dia, um campo que não foi preenchido em um formulário, e assim por diante. O pandas representa esses "buracos" de duas formas, dependendo do tipo da coluna:
+\begin{itemize}
+    \item Em colunas numéricas (float), o valor especial \texttt{nan} (\textit{Not a Number}, disponível também via \texttt{numpy.nan}) é usado.
+    \item Em colunas de outros tipos (como texto), o valor \texttt{None} do próprio Python costuma ser usado, e o tipo da coluna passa a ser \texttt{object}.
+\end{itemize}
+
+Um detalhe interessante é que o tipo int não admite valores ausentes: se uma coluna de inteiros ganha um \texttt{nan}, o pandas automaticamente promove essa coluna para o tipo \texttt{float}, já que apenas números de ponto flutuante conseguem representar o \texttt{nan}.
+
+\begin{lstlisting}
+pd.Series([10, 20, 30])           # dtype: int64
+pd.Series([10, 20, 30, np.nan])   # dtype: float64 (promovido automaticamente)
+\end{lstlisting}
+
+\subsection{Localizando valores ausentes}
+
+O método \texttt{isnull()} devolve uma máscara booleana do mesmo formato do DataFrame original, indicando célula a célula onde há valores ausentes. Sozinho, esse resultado não é muito prático para filtrar dados -- mas combinado com \texttt{any(axis=1)}, ele permite encontrar todas as linhas que têm ao menos um valor faltando:
+\begin{lstlisting}
+clima[clima.isnull().any(axis=1)]
+\end{lstlisting}
+
+O método complementar \texttt{notnull()} funciona da forma oposta, sinalizando onde os valores estão presentes.
+
+\subsection{Removendo ou preenchendo valores ausentes}
+
+Duas estratégias comuns para lidar com dados faltantes são remover as linhas/colunas afetadas, ou preencher os buracos com algum valor razoável.
+
+O método \texttt{dropna()} remove linhas (por padrão, \texttt{axis=0}) ou colunas (\texttt{axis=1}) que contenham valores ausentes:
+\begin{lstlisting}
+clima.dropna().shape          # remove linhas com algum valor faltando
+clima.dropna(axis=1).shape    # remove colunas com algum valor faltando
+\end{lstlisting}
+
+Os parâmetros \texttt{how} e \texttt{thresh} permitem ajustar esse comportamento -- por exemplo, exigir que todos os valores de uma linha estejam ausentes para que ela seja descartada, ou definir um número mínimo de valores válidos para que a linha seja mantida.
+
+Já o método \texttt{fillna()} substitui os valores ausentes por algo definido pelo usuário, podendo ser:
+\begin{itemize}
+    \item um valor constante, passado diretamente como argumento;
+    \item \texttt{method="ffill"}, que repete o último valor válido anterior (preenchimento "para frente");
+    \item \texttt{method="bfill"}, que usa o próximo valor válido (preenchimento "para trás").
+\end{itemize}
+
+\begin{lstlisting}
+clima_preenchido = clima.fillna(method="ffill")
+\end{lstlisting}
+
+Para situações mais sofisticadas, em que se deseja estimar o valor ausente a partir da tendência dos vizinhos, existe ainda o método \texttt{interpolate()}, que não será detalhado aqui, mas vale a pena conhecer.
+
+\section{Convertendo o tipo das colunas}
+
+Às vezes uma coluna é carregada com um tipo diferente do desejado -- números interpretados como texto, por exemplo. O pandas oferece algumas ferramentas para essa conversão:
+\begin{itemize}
+    \item \texttt{Series.map(funcao)}: aplica uma função a cada elemento da série, útil para conversões simples, como \texttt{map(int)} ou \texttt{map(str)}.
+    \item \texttt{pd.to\_numeric(serie, errors...)}: converte uma série para um tipo numérico, com controle sobre o que fazer quando a conversão falha (por exemplo, \texttt{errors="coerce"} transforma valores inválidos em \texttt{nan} em vez de lançar uma exceção).
+    \item \texttt{DataFrame.astype(tipo)}: converte de uma vez todas as colunas (ou, passando um dicionário, colunas específicas) para os tipos desejados.
+\end{itemize}
+
+\begin{lstlisting}
+pd.Series(["10", "20"]).map(int)                       # texto -> inteiro
+pd.to_numeric(pd.Series([1, "abc"]), errors="coerce")  # gera NaN no lugar do erro
+
+tabela = pd.DataFrame({"a": [1, 2], "b": [3, 4], "c": [5, 6]})
+tabela.astype(float)                                   # converte todas as colunas
+tabela.astype({"b": float, "c": str})                  # tipos diferentes por coluna
+\end{lstlisting}
+
+\section{Processamento de texto}
+
+Quando uma coluna contém \textit{strings}, o pandas disponibiliza versões vetorizadas dos métodos de texto do Python por meio do acessador \texttt{.str}. Isso significa que é possível aplicar operações como capitalização, divisão de \textit{strings}, substituição de trechos, etc., a todos os elementos da coluna de uma só vez, sem precisar escrever um laço explícito:
+\begin{lstlisting}
+nomes = pd.Series(["joana silva", "pedro alves", "clara souza"])
+nomes.str.title()   # capitaliza cada palavra
+\end{lstlisting}
+
+Para separar uma coluna de texto em várias colunas -- por exemplo, dividir "nome sobrenome" em duas colunas, usa-se \texttt{str.split()} com o parâmetro \texttt{expand=True}, que transforma o resultado (que por padrão seria uma lista por célula) em colunas reais de um novo DataFrame:
+\begin{lstlisting}
+nomes.str.split(expand=True)
+\end{lstlisting}
+
+Sem \texttt{expand=True}, cada elemento da série resultante seria uma lista de tokens -- útil em alguns contextos, mas menos conveniente quando queremos colunas separadas.
+
+\section{Resumo}
+
+Os principais pontos apresentados neste capítulo foram:
+\begin{itemize}
+    \item Um DataFrame pode ser criado a partir de uma matriz NumPy, de colunas ou de linhas, e cada abordagem tem sua sintaxe própria.
+    \item O comportamento dos colchetes simples (\texttt{[]}) depende do tipo do índice usado -- por isso, \texttt{loc} e \texttt{iloc} são preferíveis quando se quer previsibilidade, seguindo a mesma ordem de dimensões do NumPy (linhas, depois colunas).
+    \item O método \texttt{describe()} oferece um resumo estatístico rápido, muito útil na análise exploratória inicial.
+    \item Valores ausentes são representados por \texttt{nan} (colunas numéricas) ou \texttt{None} (colunas de objetos), e podem ser localizados, removidos ou preenchidos com \texttt{isnull}, \texttt{dropna} e \texttt{fillna}.
+    \item Colunas podem ser convertidas entre tipos com \texttt{map}, \texttt{to\_numeric} e \texttt{astype}.
+    \item Colunas de texto ganham operações vetorizadas por meio do acessador \texttt{.str}, incluindo divisão em múltiplas colunas com \texttt{split(expand=True)}.
+\end{itemize}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

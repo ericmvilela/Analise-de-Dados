@@ -1,0 +1,137 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 5: Pandas (Parte 3)\\\large Caderno de Exercícios}
+\author{Tradução e Adaptação: The University of Helsinki MOOC Center}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}.
+
+\tableofcontents
+\newpage
+
+\section{Exercícios - Pandas (Parte 3)}
+
+\subsection*{Exercício 5.1 -- Divisão de Data Continua}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva uma função \texttt{split\_date\_continues} que faça o seguinte:
+    \begin{itemize}
+        \item Leia o dataset de bicicletas.
+        \item Limpe o dataset removendo linhas e colunas que contenham apenas valores ausentes (\texttt{NaN}).
+        \item Exclua a coluna \texttt{Päivämäärä} e substitua-a pelos seus componentes separados (Ano, Mês, Dia, etc.), assim como foi feito em exercícios de listas passadas.
+    \end{itemize}
+    \item Utilize a função \texttt{concat} para juntar os componentes da data com as demais colunas do dataset.
+    \item A função deve retornar um DataFrame com 25 colunas (as primeiras cinco relacionadas à data, e o restante referente aos locais de medição).
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 5.2 -- Clima de Ciclismo}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Mescle o conjunto de dados processados de ciclismo (do exercício anterior) com o conjunto de dados de clima usando as colunas ano (\texttt{year}), mês (\texttt{month}) e dia (\texttt{day}).
+    \item Note que os nomes dessas colunas podem estar em formatos ou línguas diferentes nas duas tabelas: utilize os parâmetros \texttt{left\_on} e \texttt{right\_on} da função \texttt{merge}.
+    \item Em seguida, exclua as colunas inúteis \texttt{'m'}, \texttt{'d'}, \texttt{'Time'} e \texttt{'Time zone'}.
+    \item Escreva tudo isso na função \texttt{cycling\_weather} que retorna o DataFrame resultante.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 5.3 -- Top Bandas}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Mescle os DataFrames \texttt{UK-top40} e \texttt{bands} que estão na pasta \texttt{src}.
+    \item Realize essa operação dentro da função \texttt{top\_bands} (que não recebe parâmetros e retorna o DataFrame mesclado).
+    \item Utilize os parâmetros \texttt{left\_on} e \texttt{right\_on} da função \texttt{pd.merge} e teste a função no programa principal.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 5.4 -- Ciclistas por Dia}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Parte 1:} Escreva a função \texttt{cyclists\_per\_day}. Ela deve ler, limpar e fazer o parse (como antes) no dataset de bicicletas. Depois, deve agrupar as linhas por Ano, Mês e Dia, calculando a soma (\texttt{sum}) para cada grupo. O DataFrame retornado não deve conter as colunas \texttt{Hour} e \texttt{Weekday}.
+    \item \textbf{Parte 2:} No programa principal, obtenha o DataFrame com as contagens diárias chamando a função recém-criada. O índice do DataFrame será composto por tuplas (Year, Month, Day). Restrinja esse conjunto de dados a Agosto de 2017 e plote o gráfico. O eixo x deve ter \textit{ticks} de 1 a 31, e deve haver uma curva para cada estação de medição.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 5.5 -- Melhor Gravadora}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Retorne um DataFrame contendo os \textit{singles} pertencentes à "melhor" gravadora (Publisher) da lista \texttt{UK-top40} da primeira semana de 1964.
+    \item A "bondade" da gravadora é definida pela soma total das semanas em que seus singles permaneceram na parada (\texttt{WoC} - Weeks on Chart).
+    \item Implemente essa lógica dentro da função \texttt{best\_record\_company}.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 5.8 -- Séries Temporais de Bicicletas}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{bicycle\_timeseries} que:
+    \begin{itemize}
+        \item Lê e limpa o conjunto de dados.
+        \item Transforma a coluna \texttt{Päivämäärä} em um \texttt{DatetimeIndex} e o define como o índice das linhas do DataFrame.
+        \item Retorna o novo DataFrame contendo o índice de tempo ajustado.
+    \end{itemize}
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 5.9 -- Deslocamento (Commute)}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Na função \texttt{commute}:
+    \begin{itemize}
+        \item Use a função \texttt{bicycle\_timeseries} (do exercício 5.8) para obter os dados.
+        \item Restrinja os dados para Agosto de 2017.
+        \item Agrupe pelo dia da semana (\texttt{weekday}) e agregue pela soma (\texttt{sum()}).
+        \item Substitua a coluna de dias da semana por números de 1 a 7 e defina esta coluna como o índice da linha. Retorne esse DataFrame.
+    \end{itemize}
+    \item No método principal, plote o DataFrame. Se preferir os rótulos de segunda a domingo em vez de 1 a 7 no gráfico, você pode formatar as marcações do eixo x. Não esqueça de chamar o \texttt{plt.show()}.
+\end{itemize}
+\end{exercicio}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

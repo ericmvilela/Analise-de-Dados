@@ -1,0 +1,158 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 3: Mais NumPy\\\large Soluções dos Exercícios}
+\author{Soluções independentes baseadas nos enunciados originais}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma adaptação das soluções independentes para os exercícios baseados no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}. As soluções abaixo não são o gabarito oficial do curso.
+
+\tableofcontents
+\newpage
+
+\section{Soluções - Capítulo 3}
+
+\subsection*{Exercício 3.11 -- para tons de cinza (\textit{to grayscale})}
+
+\begin{solucao}
+\begin{lstlisting}
+import numpy as np
+import matplotlib.pyplot as plt
+
+def to_grayscale(image):
+    # Pesos definidos no problema: r=0.2126, g=0.7152, b=0.0722
+    weights = np.array([0.2126, 0.7152, 0.0722])
+    # Produto escalar para obter a matriz 2D final em tons de cinza
+    return np.dot(image[..., :3], weights)
+
+def to_red(image):
+    img = image.copy()
+    img[:, :, 1] = 0  # Zera o verde
+    img[:, :, 2] = 0  # Zera o azul
+    return img
+
+def to_green(image):
+    img = image.copy()
+    img[:, :, 0] = 0  # Zera o vermelho
+    img[:, :, 2] = 0  # Zera o azul
+    return img
+
+def to_blue(image):
+    img = image.copy()
+    img[:, :, 0] = 0  # Zera o vermelho
+    img[:, :, 1] = 0  # Zera o verde
+    return img
+
+def main():
+    painting = plt.imread('src/painting.png')
+    
+    gray = to_grayscale(painting)
+    plt.gray()
+    plt.imshow(gray)
+    plt.show()
+
+    fig, ax = plt.subplots(3, 1)
+    ax[0].imshow(to_red(painting))
+    ax[1].imshow(to_green(painting))
+    ax[2].imshow(to_blue(painting))
+    plt.show()
+
+if __name__ == '__main__':
+    main()
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 3.12 -- desvanecimento radial (\textit{radial fade})}
+
+\begin{solucao}
+\begin{lstlisting}
+import numpy as np
+import matplotlib.pyplot as plt
+
+def center(a):
+    return (a.shape[0] - 1) / 2.0, (a.shape[1] - 1) / 2.0
+
+def radial_distance(a):
+    h, w = a.shape[:2]
+    cy, cx = center(a)
+    y, x = np.ogrid[0:h, 0:w]
+    return np.sqrt((x - cx)**2 + (y - cy)**2)
+
+def scale(a, tmin=0.0, tmax=1.0):
+    a_min = np.min(a)
+    a_max = np.max(a)
+    if a_min == a_max:
+        return np.full_like(a, tmin)
+    return ((a - a_min) / (a_max - a_min)) * (tmax - tmin) + tmin
+
+def radial_mask(a):
+    dist = radial_distance(a)
+    scaled_dist = scale(dist)
+    return 1 - scaled_dist
+
+def radial_fade(a):
+    mask = radial_mask(a)
+    # Garante o broadcasting correto com a terceira dimensao (cores)
+    return a * mask[..., np.newaxis]
+
+def main():
+    painting = plt.imread('src/painting.png')
+    
+    fig, ax = plt.subplots(3, 1)
+    ax[0].imshow(painting)
+    ax[1].imshow(radial_mask(painting), cmap='gray')
+    ax[2].imshow(radial_fade(painting))
+    plt.show()
+
+if __name__ == '__main__':
+    main()
+\end{lstlisting}
+\end{solucao}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

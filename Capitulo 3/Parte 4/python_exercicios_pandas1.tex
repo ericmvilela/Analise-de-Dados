@@ -1,0 +1,86 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 4: Pandas (Parte 1)\\\large Caderno de Exercícios}
+\author{Tradução e Adaptação: The University of Helsinki MOOC Center}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}.
+
+\tableofcontents
+\newpage
+
+\section{Exercícios - Capítulo 3 (Pandas Parte 1)}
+
+\subsection*{Exercício 3.13 -- Ler série (\textit{read series})}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{read\_series} que lê as linhas de entrada do usuário e retorna uma \texttt{Series}. Cada linha deve conter primeiro o índice e, em seguida, o valor correspondente, separados por espaço em branco. O índice e os valores são \textit{strings} (neste caso, o \texttt{dtype} é \texttt{object}). Uma linha vazia sinaliza o fim da \texttt{Series}. 
+    \item \textbf{Erros e exceções:} Entradas malformadas devem causar uma exceção (\texttt{Exception}). Uma linha de entrada é malformada se não for vazia e, ao ser dividida por espaços em branco, não resultar em duas partes. Teste sua função a partir da função \texttt{main}.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 3.14 -- Operações em séries (\textit{operations on series})}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Parte 1:} Escreva a função \texttt{create\_series} que recebe duas listas de números como parâmetros. Ambas as listas devem ter tamanho 3. A função deve primeiro criar duas Séries, \texttt{s1} e \texttt{s2}. A primeira série deve ter os valores da primeira lista de parâmetros e ter os índices correspondentes \texttt{a}, \texttt{b} e \texttt{c}. A segunda série deve obter seus valores da segunda lista de parâmetros e ter novamente os índices correspondentes \texttt{a}, \texttt{b} e \texttt{c}. A função deve retornar o par com essas Séries (\texttt{s1}, \texttt{s2}).
+    \item \textbf{Parte 2:} Em seguida, escreva a função \texttt{modify\_series} que recebe duas Séries como parâmetros. Ela deve adicionar à primeira Série (\texttt{s1}) um novo valor com o índice \texttt{d}. O novo valor deve ser igual ao valor da Série \texttt{s2} que possui o índice \texttt{b}. Em seguida, delete o elemento de \texttt{s2} que tem o índice \texttt{b}. Agora a primeira Série deve ter quatro valores, enquanto a segunda lista terá apenas dois valores. A adição de um novo elemento a uma Série pode ser feita por atribuição, como em dicionários. A exclusão de um elemento de uma Série pode ser feita com a instrução \texttt{del}.
+    \item \textbf{Teste:} Teste essas funções a partir da função \texttt{main}. Tente somar as Séries retornadas pela função \texttt{modify\_series}. As operações em Séries usam os índices para manter as operações alinhadas elemento a elemento. Se para algum índice a operação não puder ser realizada, o valor resultante será \texttt{NaN} (Not A Number).
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 3.15 -- Série inversa (\textit{inverse series})}
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escreva a função \texttt{inverse\_series} que recebe uma \texttt{Series} como parâmetro e retorna uma nova série, cujos índices e valores tiveram seus papéis trocados.
+    \item \textbf{Teste e Pergunta:} Teste sua função a partir da função \texttt{main}. O que acontece se algum valor aparecer várias vezes na Série original? O que acontece se você usar esse valor repetido como índice na Série resultante?
+\end{itemize}
+\end{exercicio}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

@@ -1,0 +1,165 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 3: Matplotlib\\\large Conteúdo Teórico}
+\author{Tradução e Adaptação: The University of Helsinki MOOC Center}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}.
+
+\begin{objetivos}
+\begin{itemize}
+    \item Aprender a desenhar figuras usando Matplotlib.
+\end{itemize}
+\end{objetivos}
+
+\tableofcontents
+\newpage
+
+\section{Matplotlib}
+
+Para compreender melhor os dados, é útil conseguir visualizá-los de várias maneiras. Matplotlib é a biblioteca de visualização de baixo nível mais comum para Python. Ela pode criar gráficos de linhas, gráficos de dispersão, gráficos de densidade, histogramas, mapas de calor e outros tipos de visualização.
+
+Durante este curso, não entraremos profundamente nos detalhes do Matplotlib. Em vez disso, veremos alguns exemplos distribuídos ao longo do restante do material para mostrar seu uso.
+
+\subsection{Figura simples}
+
+Começaremos com um exemplo. A forma padrão de importar Matplotlib é usando a abreviação \texttt{plt}. Primeiro, vamos criar alguns dados para visualizar.
+
+\begin{lstlisting}
+import numpy as np
+import matplotlib.pyplot as plt
+
+a = np.array([2, 5, 7, 4, 7, 0, 3, 1, 9, 2])
+
+plt.plot(a) # desenha os pontos do array a
+plt.title("Minha primeira figura")
+plt.xlabel("Meu eixo x")
+plt.ylabel("Meu eixo y")
+plt.show() # solicita ao matplotlib que mostre a figura
+\end{lstlisting}
+
+A função \texttt{plot} realiza o desenho do gráfico. As demais chamadas ajustam detalhes da figura. Em \textit{notebooks}, \texttt{plt.show()} nem sempre é estritamente necessário, mas deixá-lo explícito pode tornar o código mais organizado.
+
+É importante entender como os valores armazenados no array \texttt{a} correspondem às características apresentadas na figura.
+
+\subsection{Componentes de uma figura}
+
+Os principais componentes de qualquer figura do Matplotlib e sua terminologia podem ser visualizados na documentação da biblioteca. O objeto de nível superior é a \texttt{figure}. Uma figura pode conter uma ou mais subfiguras, que no Matplotlib são chamadas de \texttt{axes}.
+
+No gráfico anterior, as coordenadas x foram definidas implicitamente pelos índices do array \texttt{a}, isto é, por \texttt{arange(10)}.
+
+\section{Subfiguras}
+
+É possível criar uma figura com várias subfiguras usando o comando \texttt{plt.subplots}. Ele cria uma grade de subfiguras; o número de linhas e colunas da grade é informado como parâmetro.
+
+O comando retorna um par contendo:
+\begin{enumerate}
+    \item o objeto \texttt{figure};
+    \item um array contendo as subfiguras.
+\end{enumerate}
+
+No Matplotlib, as subfiguras são chamadas de \texttt{axes}. Observe a diferença entre \textit{axis}, no singular, e \textit{axes}, no plural. Assim, é possível pensar em \textit{axes} como o par formado pelos eixos x e y que define uma figura bidimensional.
+
+Exemplo:
+
+\begin{lstlisting}
+fig, ax = plt.subplots(2, 2)
+print(ax.shape)
+
+ax[0,0].plot(np.arange(6)) # superior esquerdo
+ax[0,1].plot(np.arange(6, 0, -1)) # superior direito
+ax[1,0].plot((-1)**np.arange(6)) # inferior esquerdo
+ax[1,1].plot((-1)**np.arange(1, 7)) # inferior direito
+
+plt.show()
+\end{lstlisting}
+
+Se você não quiser trabalhar diretamente com os objetos \texttt{axes}, pode direcionar as chamadas ao módulo \texttt{pyplot}, em um estilo mais parecido com MATLAB:
+
+\begin{lstlisting}
+plt.subplot(2, 2, 1)
+plt.plot(np.arange(6))
+plt.subplot(2, 2, 2)
+plt.plot(np.arange(6, 0, -1))
+plt.subplot(2, 2, 3)
+plt.plot((-1)**np.arange(6))
+plt.subplot(2, 2, 4)
+plt.plot((-1)**np.arange(1, 7))
+plt.show()
+\end{lstlisting}
+
+Observe que, neste exemplo, usamos tanto a função \texttt{plt.plot} quanto o método \texttt{plot} de um objeto \texttt{axes}. As funções no espaço de nomes \texttt{plt} referem-se às variáveis globais que informam qual figura e quais eixos estão ativos.
+
+Se precisarmos trabalhar com várias figuras e/ou vários eixos ao mesmo tempo, não podemos depender apenas das funções de \texttt{plt}. Nesse caso, devemos acessar diretamente cada objeto \texttt{figure} ou \texttt{axes} e utilizar seus métodos de desenho.
+
+A ideia é semelhante ao uso de geradores de números aleatórios do NumPy. Funções como \texttt{np.random.randn} utilizam o gerador aleatório global. Quando queremos vários geradores independentes ao mesmo tempo, podemos criar os geradores e então usar seus métodos.
+
+Assim, tanto para geradores aleatórios quanto para gráficos do Matplotlib, podemos escolher entre um único objeto global, com funções que se referem a ele, ou vários objetos independentes e seus respectivos métodos.
+
+\section{Outras bibliotecas de visualização de dados para Python}
+
+O desenvolvimento da biblioteca Matplotlib começou em 2003. Em alguns aspectos, essa idade pode ser percebida, pois as figuras padrão podem não parecer tão atraentes quanto as produzidas por alternativas mais modernas. Além disso, algumas figuras simples podem exigir uma quantidade considerável de código.
+
+Algumas bibliotecas modernas e comuns são:
+
+\subsection{Seaborn}
+Seaborn é uma biblioteca de visualização de nível mais alto construída sobre o Matplotlib. Ela permite criar facilmente gráficos mais complexos. As figuras produzidas também tendem a ter uma aparência mais agradável do que aquelas obtidas com as configurações padrão do Matplotlib.
+
+\subsection{Bokeh}
+Bokeh cria páginas HTML que podem ser visualizadas em um navegador. Como seu resultado não se limita a imagens estáticas e pode conter JavaScript, os gráficos podem ser interativos. Essa interatividade pode incluir zoom, deslocamento da visualização ou controles como botões e barras deslizantes que modificam a figura.
+
+\subsection{HoloViews}
+HoloViews é uma biblioteca de nível ainda mais alto construída sobre Bokeh e Matplotlib.
+
+\subsection{Plotly}
+Plotly é uma ferramenta poderosa para criação de gráficos interativos.
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

@@ -1,0 +1,154 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 4: Pandas (Parte 1)\\\large Soluções dos Exercícios}
+\author{Soluções independentes baseadas nos enunciados originais}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma adaptação das soluções independentes para os exercícios baseados no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}. As soluções abaixo não são o gabarito oficial do curso.
+
+\tableofcontents
+\newpage
+
+\section{Soluções - Capítulo 3 (Pandas Parte 1)}
+
+\subsection*{Exercício 3.13 -- Ler série (\textit{read series})}
+\begin{solucao}
+\begin{lstlisting}
+import pandas as pd
+
+def read_series():
+    indices = []
+    values = []
+    while True:
+        line = input("Digite o indice e o valor (ou deixe em branco para sair): ")
+        if not line:
+            break
+        parts = line.split()
+        if len(parts) != 2:
+            raise Exception("Malformed input")
+        indices.append(parts[0])
+        values.append(parts[1])
+    return pd.Series(values, index=indices)
+
+def main():
+    try:
+        s = read_series()
+        print(s)
+    except Exception as e:
+        print(f"Erro: {e}")
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 3.14 -- Operações em séries (\textit{operations on series})}
+\begin{solucao}
+\begin{lstlisting}
+import pandas as pd
+
+def create_series(L1, L2):
+    s1 = pd.Series(L1, index=['a', 'b', 'c'])
+    s2 = pd.Series(L2, index=['a', 'b', 'c'])
+    return s1, s2
+
+def modify_series(s1, s2):
+    s1['d'] = s2['b']
+    del s2['b']
+    return s1, s2
+
+def main():
+    s1, s2 = create_series([1, 2, 3], [4, 5, 6])
+    print("S1 e S2 Originais:")
+    print(s1)
+    print(s2)
+    
+    s1, s2 = modify_series(s1, s2)
+    print("\nApós modificação:")
+    print(s1)
+    print(s2)
+    
+    print("\nSoma de s1 e s2 (alinhado pelos índices):")
+    print(s1 + s2)
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 3.15 -- Série inversa (\textit{inverse series})}
+\begin{solucao}
+\begin{lstlisting}
+import pandas as pd
+
+def inverse_series(s):
+    return pd.Series(s.index, index=s.values)
+
+def main():
+    s = pd.Series([1, 2, 2], index=['a', 'b', 'c'])
+    print("Serie original:")
+    print(s)
+    
+    inv = inverse_series(s)
+    print("\nSerie invertida:")
+    print(inv)
+    
+    print("\nAcessando o indice repetido '2':")
+    # Retornara todos os elementos associados a este indice
+    print(inv[2]) 
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+
+\textbf{Resposta para a pergunta do exercício:} Quando um valor aparece várias vezes na Série original, esse valor se tornará um índice repetido na nova Série (Série inversa). Se você usar esse valor repetido para indexar a nova Série (\texttt{inv[valor]}), o Pandas retornará uma nova Série contendo todos os elementos que possuem aquele índice (em vez de retornar apenas um único valor escalar).
+\end{solucao}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}

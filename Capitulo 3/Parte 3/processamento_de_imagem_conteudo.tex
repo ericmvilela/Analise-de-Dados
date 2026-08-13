@@ -1,0 +1,169 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 3: Mais NumPy\\\large Processamento de Imagens}
+\author{Tradução e Adaptação: The University of Helsinki MOOC Center}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{The University of Helsinki MOOC Center}.
+
+\begin{objetivos}
+\begin{itemize}
+    \item Aprender como processar imagens em Python.
+\end{itemize}
+\end{objetivos}
+
+\tableofcontents
+\newpage
+
+\section{Processamento de Imagens}
+
+\textbf{Nota sobre arquivos:} Para acompanhar os exemplos desta seção e executar os códigos por conta própria, você precisará baixar ou escolher uma imagem qualquer (como uma foto JPG ou PNG) e salvá-la no mesmo diretório em que estiver rodando seus scripts Python. Recomendamos nomear a imagem como \texttt{painting.png} para corresponder aos exemplos abaixo.
+
+Uma imagem é uma coleção de pixels, que é uma abreviação para elementos de imagem (\textit{picture elements}). Uma imagem em tons de cinza pode ser representada como um array bidimensional, cujo primeiro eixo corresponde à coordenada x da imagem e o segundo eixo corresponde à coordenada y. O array contém, em cada par de coordenadas $(x,y)$, um valor que normalmente é um ponto flutuante entre 0.0 e 1.0, ou um inteiro entre 0 e 255. Isso especifica o tom de cinza. Por exemplo, se o array contém o valor 255 nas coordenadas (0,0), então na imagem o pixel no canto superior esquerdo é branco.
+
+Em imagens coloridas, cada pixel tem três componentes de cor (ou canais) correspondentes ao vermelho, verde e azul (RGB). Esses canais formam o terceiro eixo da imagem, com cada canal armazenando um valor que representa a intensidade da respectiva cor. O valor do canal varia entre 0.0 e 1.0 (ou entre 0 e 255). Ao combinar diferentes valores de intensidade para os componentes vermelho, verde e azul de um pixel, é possível representar até 16,7 milhões de cores únicas.
+
+Como as imagens podem ser representadas como arrays multidimensionais, podemos processá-las facilmente usando as funções do NumPy. Vejamos exemplos disso.
+
+\begin{lstlisting}
+import matplotlib.pyplot as plt
+import numpy as np
+
+painting = plt.imread("painting.png")
+print(painting.shape)
+print(f"A imagem consiste em {painting.shape[0] * painting.shape[1]} pixels")
+plt.imshow(painting)
+plt.show()
+\end{lstlisting}
+\begin{verbatim}
+(368, 640, 3)
+A imagem consiste em 235520 pixels
+\end{verbatim}
+
+Como a imagem agora é um array do NumPy, podemos executar algumas operações facilmente:
+\begin{lstlisting}
+plt.imshow(painting[:,::-1]); # espelha a imagem na direcao x
+\end{lstlisting}
+
+A seguir, definimos os pixels nas primeiras 30 linhas como brancos:
+\begin{lstlisting}
+painting2 = painting.copy() # nao estrague a pintura original!
+painting2[0:30,:,:] = 1.0    # valor maximo para os tres componentes produz branco
+plt.imshow(painting2);
+\end{lstlisting}
+
+Para uma operação um pouco mais complicada, podemos criar uma função que retorna uma cópia da imagem de modo que ela escureça (fade para o preto) à medida que nos movemos para a esquerda.
+\begin{lstlisting}
+def fadex(image):
+    height, width = image.shape[:2]
+    m = np.linspace(0, 1, width).reshape(1, width, 1)
+    result = image * m    # note que contamos com o broadcasting aqui
+    return result
+
+modified = fadex(painting)
+print(modified.shape)
+plt.imshow(modified);
+\end{lstlisting}
+\begin{verbatim}
+(368, 640, 3)
+\end{verbatim}
+
+\section{Encontrando clusters em uma imagem}
+
+Vamos primeiro gerar alguns dados para este exemplo:
+\begin{lstlisting}
+n = 5
+l = 256
+im = np.zeros((l, l))
+np.random.seed(0)
+points = np.random.randint(0, l, (2, n**2)) # amostra n*n pixels
+im[points[0], points[1]] = 1
+plt.imshow(im);
+\end{lstlisting}
+
+\begin{lstlisting}
+from scipy import ndimage
+im2 = ndimage.gaussian_filter(im, sigma=l/(8.*n)) # borra um pouco a imagem
+plt.imshow(im2);
+\end{lstlisting}
+
+Vamos tentar encontrar clusters na imagem gerada acima:
+\begin{lstlisting}
+mask = im2 > im2.mean() # mascara os pixels cuja intensidade esta acima da media
+label_im, nb_labels = ndimage.label(mask) # componentes conectados formam clusters
+print(f"O numero de clusters e {nb_labels}")
+plt.imshow(label_im);
+\end{lstlisting}
+\begin{verbatim}
+O numero de clusters e 12
+\end{verbatim}
+
+Embora esse método que usamos tenha sido muito simples, ele ainda pode ser usado, por exemplo, para contar automaticamente o número de pássaros ou estrelas em uma imagem. Obviamente, humanos conseguem fazer isso facilmente, mas quando existem centenas ou milhares de imagens, é melhor usar máquinas para realizar esse trabalho mecânico.
+
+Existe um grande número de aplicações de processamento de imagens, das quais listamos apenas algumas aqui:
+\begin{itemize}
+    \item redução de ruído (\textit{denoising})
+    \item correção de desfoque (\textit{deblurring})
+    \item segmentação de imagens
+    \item extração de características (\textit{feature extraction})
+    \item zoom, rotação
+    \item filtragem
+\end{itemize}
+
+\section{Bibliotecas Adicionais}
+Existem várias bibliotecas escritas em Python que permitem o fácil processamento de imagens. Alguns exemplos destas:
+\begin{itemize}
+    \item pillow
+    \item scikit-image
+    \item No Scipy, há o subpacote \texttt{ndimage} que também contém rotinas para processamento de imagens.
+\end{itemize}
+
+\vspace{2em}
+\noindent\textbf{Créditos:} Este conteúdo foi originalmente criado pela \textit{The University of Helsinki MOOC Center} para o curso \textit{Data Analysis with Python}.
+\end{document}
