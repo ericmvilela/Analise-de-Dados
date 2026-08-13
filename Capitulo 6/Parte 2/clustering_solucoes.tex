@@ -1,0 +1,224 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 6: Machine Learning Types\\\large Soluções dos Exercícios}
+\author{Tradução e Adaptação: Universidade de Helsinque (MOOC.fi)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}. As soluções apresentadas a seguir foram elaboradas para fins didáticos, seguindo os enunciados dos exercícios propostos no curso original.
+
+\tableofcontents
+\newpage
+
+\section{Soluções - Capítulo 6 (Clustering)}
+
+\subsection*{Exercício 6.5 -- Clustering de Plantas}
+
+\begin{solucao}
+\begin{lstlisting}
+import scipy
+from sklearn.datasets import load_iris
+from sklearn.cluster import KMeans
+from sklearn.metrics import accuracy_score
+
+def find_permutation(n_clusters, real_labels, labels):
+    permutation = []
+    for i in range(n_clusters):
+        idx = labels == i
+        # Escolhe o rotulo mais frequente mapeado no escopo do cluster
+        new_label = scipy.stats.mode(real_labels[idx])[0]
+        # Validacao cross-version pandas/scipy
+        if type(new_label) == np.ndarray:
+            new_label = new_label[0]
+        permutation.append(new_label)
+    return permutation
+
+def plant_clustering():
+    iris = load_iris()
+    X = iris.data
+    y = iris.target
+    
+    # Modelo preve em 3 categorias independentes
+    model = KMeans(n_clusters=3, random_state=0)
+    model.fit(X)
+    
+    # Realinha a resposta com a chave e submete ao validador
+    permutation = find_permutation(3, y, model.labels_)
+    new_labels = [permutation[label] for label in model.labels_]
+    
+    return accuracy_score(y, new_labels)
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 6.6 -- Clusters Não Convexos}
+
+\begin{solucao}
+\begin{lstlisting}
+import pandas as pd
+import numpy as np
+import scipy
+from sklearn.cluster import DBSCAN
+from sklearn.metrics import accuracy_score
+
+def find_permutation_with_outliers(n_clusters, real_labels, labels):
+    permutation = []
+    for i in range(n_clusters):
+        idx = labels == i
+        if len(real_labels[idx]) == 0:
+            permutation.append(0) # Padrao caso nao haja registros
+            continue
+        new_label = scipy.stats.mode(real_labels[idx])[0]
+        if type(new_label) == np.ndarray:
+            new_label = new_label[0]
+        permutation.append(new_label)
+    return permutation
+
+def nonconvex_clusters():
+    df = pd.read_csv("src/data.tsv", sep='\t')
+    X = df[['X1', 'X2']].values
+    y = df['y'].values
+    
+    results = []
+    for eps in np.arange(0.05, 0.20, 0.05):
+        model = DBSCAN(eps=eps)
+        model.fit(X)
+        
+        # Filtra quantidade e outliers (-1)
+        unique_labels = set(model.labels_)
+        num_clusters = len(unique_labels) - (1 if -1 in unique_labels else 0)
+        outliers = list(model.labels_).count(-1)
+        
+        # Verificando se os espacos convergem com os reais previstos (2 clusters isolados)
+        if num_clusters == len(set(y)):
+            perm = find_permutation_with_outliers(num_clusters, y, model.labels_)
+            mask = model.labels_ != -1
+            acc = accuracy_score(y[mask], [perm[label] for label in model.labels_[mask]])
+        else:
+            acc = np.nan
+            
+        results.append([eps, acc, num_clusters, outliers])
+        
+    return pd.DataFrame(results, columns=["eps", "Score", "Clusters", "Outliers"])
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 6.7 -- Locais de Ligação Molecular}
+
+\begin{solucao}
+\begin{lstlisting}
+import pandas as pd
+import numpy as np
+import scipy
+from sklearn.cluster import AgglomerativeClustering
+from sklearn.metrics import accuracy_score, pairwise_distances
+
+def toint(nucleotide):
+    mapping = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
+    return mapping.get(nucleotide, -1)
+
+def get_features_and_labels(filename):
+    df = pd.read_csv(filename, sep='\t')
+    
+    # List comprehension encadeada gerando vetores inteiros
+    X = np.array([[toint(char) for char in seq] for seq in df['X']])
+    y = df['y'].values
+    return X, y
+
+def find_permutation(n_clusters, real_labels, labels):
+    permutation = []
+    for i in range(n_clusters):
+        idx = labels == i
+        new_label = scipy.stats.mode(real_labels[idx])[0]
+        if type(new_label) == np.ndarray:
+            new_label = new_label[0]
+        permutation.append(new_label)
+    return permutation
+
+def cluster_euclidean(filename):
+    X, y = get_features_and_labels(filename)
+    # Classificador aglomerativo Euclidiano
+    model = AgglomerativeClustering(n_clusters=2, linkage='average', affinity='euclidean')
+    labels = model.fit_predict(X)
+    
+    perm = find_permutation(2, y, labels)
+    new_labels = [perm[l] for l in labels]
+    return accuracy_score(y, new_labels)
+
+def cluster_hamming(filename):
+    X, y = get_features_and_labels(filename)
+    
+    # Processa os componentes metricos usando algorimos focados no modelo Hamming
+    dist_matrix = pairwise_distances(X, metric='hamming')
+    
+    # Utiliza as distancias calculadas previamente via precomputed
+    model = AgglomerativeClustering(n_clusters=2, linkage='average', affinity='precomputed')
+    labels = model.fit_predict(dist_matrix)
+    
+    perm = find_permutation(2, y, labels)
+    new_labels = [perm[l] for l in labels]
+    return accuracy_score(y, new_labels)
+\end{lstlisting}
+\end{solucao}
+
+\end{document}

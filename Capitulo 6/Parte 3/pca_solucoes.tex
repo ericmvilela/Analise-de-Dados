@@ -1,0 +1,117 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 6: Machine Learning Types\\\large Soluções dos Exercícios}
+\author{Tradução e Adaptação: Universidade de Helsinque (MOOC.fi)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}. As soluções apresentadas a seguir foram elaboradas para fins didáticos, seguindo os enunciados dos exercícios propostos no curso original.
+
+\tableofcontents
+\newpage
+
+\section{Soluções - Capítulo 6 (PCA)}
+
+\subsection*{Exercício 6.8 -- Variância Explicada}
+
+\begin{solucao}
+\begin{lstlisting}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+
+def explained_variance():
+    # Carrega base bruta de treinamento
+    df = pd.read_csv("src/data.tsv", sep='\t')
+    
+    # 1. Calcula a variancia original das colunas (matematica base)
+    var = np.var(df, axis=0).values
+    
+    # 2. Utiliza PCA como redutor e captura a metrica analitica explicativa
+    pca = PCA()
+    pca.fit(df)
+    exp_var = pca.explained_variance_
+    
+    return var, exp_var
+
+def main():
+    var, exp_var = explained_variance()
+    
+    # Prepara o formatador string padrao .3f separando por espaco simples via .join e map
+    var_str = " ".join(f"{x:.3f}" for x in var)
+    exp_var_str = " ".join(f"{x:.3f}" for x in exp_var)
+    
+    print("The variances are:", var_str)
+    print("The explained variances after PCA are:", exp_var_str)
+    
+    # === PARTE 2: PLOTAGEM ===
+    # Cumsum gera a progressao logica. Ex: se variance[1] for 15, e var[2] for 15, ele plotara (15, 30).
+    cum_exp_var = np.cumsum(exp_var)
+    plt.plot(np.arange(1, len(cum_exp_var) + 1), cum_exp_var)
+    # plt.show() # REMOVER DO COMMIT
+\end{lstlisting}
+\end{solucao}
+
+\end{document}

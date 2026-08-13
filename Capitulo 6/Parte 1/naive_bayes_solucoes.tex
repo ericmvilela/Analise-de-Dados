@@ -1,0 +1,229 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 6: Machine Learning Types\\\large Soluções dos Exercícios}
+\author{Tradução e Adaptação: Universidade de Helsinque (MOOC.fi)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}. As soluções apresentadas a seguir foram elaboradas para fins didáticos, seguindo os enunciados dos exercícios propostos no curso original.
+
+\tableofcontents
+\newpage
+
+\section{Soluções - Capítulo 6}
+
+\subsection*{Exercício 6.1 -- Classificação de Blobs}
+
+\begin{solucao}
+\begin{lstlisting}
+from sklearn.naive_bayes import GaussianNB
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+def blob_classification(X, y):
+    # Divide os dados de maneira deterministica (random_state=0) com tamanho de treino 75%
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.75, random_state=0)
+    
+    # Treina o modelo usando Naive Bayes Gaussiano
+    model = GaussianNB()
+    model.fit(X_train, y_train)
+    
+    # Efetua as previsoes e retorna a acuracia
+    predictions = model.predict(X_test)
+    return accuracy_score(y_test, predictions)
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 6.2 -- Classificação de Plantas}
+
+\begin{solucao}
+\begin{lstlisting}
+from sklearn.datasets import load_iris
+from sklearn.naive_bayes import GaussianNB
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+def plant_classification():
+    # Carrega o conjunto local e divide com base em 80% do traning set
+    dataset = load_iris()
+    X = dataset.data
+    y = dataset.target
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.80, random_state=0)
+    
+    # Aplica o modelo Gaussiano
+    model = GaussianNB()
+    model.fit(X_train, y_train)
+    
+    # Retorna o score final
+    return accuracy_score(y_test, model.predict(X_test))
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 6.3 -- Classificação de Palavras}
+
+\begin{solucao}
+\begin{lstlisting}
+import numpy as np
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.model_selection import cross_val_score, KFold
+
+ALPHABET = "abcdefghijklmnopqrstuvwxyzäö-"
+
+def get_features(a):
+    # a: array 1D com palavras
+    features = np.zeros((len(a), len(ALPHABET)))
+    for i, word in enumerate(a):
+        for char in word:
+            if char in ALPHABET:
+                features[i, ALPHABET.index(char)] += 1
+    return features
+
+def contains_valid_chars(s):
+    # Verifica validade exclusiva pelas letras do alfabeto permitido
+    return all(c in ALPHABET for c in s)
+
+def get_features_and_labels():
+    # Simulando as cargas de listas locais:
+    # finnish = load_finnish()
+    # english = load_english()
+    
+    # (Para uso de solucao online, consideraremos lists importadas)
+    
+    # Processa finlandes
+    finnish_filtered = []
+    for w in finnish:
+        w_lower = w.lower()
+        if contains_valid_chars(w_lower):
+            finnish_filtered.append(w_lower)
+            
+    # Processa ingles (Removendo nomes proprios / Letra maiuscula primeiro)
+    english_filtered = []
+    for w in english:
+        if not w[0].isupper():
+            w_lower = w.lower()
+            if contains_valid_chars(w_lower):
+                english_filtered.append(w_lower)
+                
+    X = get_features(np.array(finnish_filtered + english_filtered))
+    y = np.array([0]*len(finnish_filtered) + [1]*len(english_filtered))
+    return X, y
+
+def word_classification():
+    X, y = get_features_and_labels()
+    model = MultinomialNB()
+    
+    # Usa cross-validation kfold para prever de forma fragmentada (em 5 iteracoes)
+    cv = KFold(n_splits=5, shuffle=True, random_state=0)
+    scores = cross_val_score(model, X, y, cv=cv)
+    return scores
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{Exercício 6.4 -- Detecção de Spam}
+
+\begin{solucao}
+\begin{lstlisting}
+import gzip
+import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+def spam_detection(random_state=0, fraction=1.0):
+    # Le os textos do ambiente src e captura as linhas referentes as fracoes processadas
+    with gzip.open('src/ham.txt.gz', 'rt', encoding='utf-8') as f:
+        ham_lines = f.readlines()
+        ham = ham_lines[:int(fraction * len(ham_lines))]
+        
+    with gzip.open('src/spam.txt.gz', 'rt', encoding='utf-8') as f:
+        spam_lines = f.readlines()
+        spam = spam_lines[:int(fraction * len(spam_lines))]
+        
+    X = ham + spam
+    y = np.array([0]*len(ham) + [1]*len(spam))
+    
+    # Inicializa a maquina de pipeline que converte letras repetidas por caracteristica
+    vec = CountVectorizer()
+    X_features = vec.fit_transform(X)
+    
+    # Divide dados
+    X_train, X_test, y_train, y_test = train_test_split(X_features, y, train_size=0.75, random_state=random_state)
+    
+    # Classifica
+    model = MultinomialNB()
+    model.fit(X_train, y_train)
+    predictions = model.predict(X_test)
+    
+    # Resultados
+    acc = accuracy_score(y_test, predictions)
+    total_tested = len(y_test)
+    misclassified = (y_test != predictions).sum()
+    
+    return acc, total_tested, misclassified
+\end{lstlisting}
+\end{solucao}
+
+\end{document}

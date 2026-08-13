@@ -1,0 +1,137 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 6: Machine Learning Types\\\large Caderno de Exercícios}
+\author{Tradução e Adaptação: Universidade de Helsinque (MOOC.fi)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}.
+
+\tableofcontents
+\newpage
+
+\section{Exercícios - Capítulo 6 (Classificação Naive Bayes)}
+
+\subsection*{Exercício 6.1 -- Classificação de Blobs (blob\_classification)}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escrever a função \texttt{blob\_classification(X, y)} que recebe a matriz de \emph{features} \texttt{X} e o vetor de rótulos \texttt{y} e realiza uma classificação do tipo \emph{Naive Bayes Gaussiano}.
+    \item \textbf{Procedimento:}
+    \begin{enumerate}
+        \item Use a função \texttt{train\_test\_split} da biblioteca \texttt{sklearn.model\_selection} para separar os dados em conjunto de treino e conjunto de teste.
+        \item Configure \texttt{random\_state=0} para a separação dos dados de forma que o resultado seja sempre determinístico.
+        \item Configure \texttt{train\_size=0.75} (ou seja, 75\% dos dados serão usados para treino e 25\% para teste).
+        \item Instancie o classificador \texttt{GaussianNB}, faça o fit do modelo com os dados de treinamento e utilize o \texttt{predict} com os dados de teste.
+    \end{enumerate}
+    \item \textbf{Retorno:} A função deve retornar o \texttt{accuracy\_score} da previsão realizada.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 6.2 -- Classificação de Plantas (plant\_classification)}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Escrever a função \texttt{plant\_classification()} focada em prever o famoso \textit{Dataset} Iris usando Naive Bayes.
+    \item \textbf{Procedimento:}
+    \begin{enumerate}
+        \item Carregue o conjunto de dados chamando \texttt{sklearn.datasets.load\_iris()}.
+        \item Divida os dados chamando \texttt{train\_test\_split} com tamanho de treino equivalente a 80\% (\texttt{train\_size=0.8}) e \texttt{random\_state=0}.
+        \item Ajuste (\texttt{fit}) o modelo aos dados utilizando o \texttt{GaussianNB}.
+        \item Faça a previsão (\texttt{predict}) sob a parcela de testes.
+    \end{enumerate}
+    \item \textbf{Retorno:} O escore exato da predição retornado pela função \texttt{accuracy\_score}.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 6.3 -- Classificação de Palavras (word\_classification)}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Construir um modelo para prever se palavras desconhecidas pertencem ao dicionário finlandês ou ao inglês. Este exercício exige que você processe a limpeza dos dados, conte letras e aplique Validação Cruzada (\textit{Cross-Validation}).
+    \item \textbf{Parte 1 - \texttt{get\_features(a)}:} Receba um array unidimensional de palavras e retorne a matriz de \emph{features} no formato \texttt{(n, 29)}. Para cada palavra, a respectiva linha da matriz deve conter o número de ocorrências de cada um dos 29 caracteres possíveis do alfabeto: \texttt{"abcdefghijklmnopqrstuvwxyzäö-"}.
+    \item \textbf{Parte 2 - \texttt{contains\_valid\_chars(s)}:} Crie uma função auxiliar que retorne \texttt{True} apenas se a palavra \texttt{s} for composta unicamente pelos 29 caracteres listados acima.
+    \item \textbf{Parte 3 - \texttt{get\_features\_and\_labels()}:} Utilize as rotinas que injetam a carga das palavras finlandesas e inglesas (você pode assumir que as listas são carregadas via métodos locais). Transforme o finlandês para letras minúsculas e retire palavras contendo caracteres inválidos (utilizando a Parte 2). Para palavras inglesas, \textbf{remova-as primeiro se começarem com letra maiúscula} (para excluir nomes próprios) e depois aplique as mesmas transformações usadas no finlandês (minúscula e caracteres válidos). Retorne \texttt{(X, y)} sendo finlandês a classe 0 e inglês a classe 1.
+    \item \textbf{Parte 4 - \texttt{word\_classification()}:} Extraia \texttt{X, y}. Crie o classificador \texttt{MultinomialNB}. Em seguida, obtenha a matriz de avaliações a partir de \texttt{sklearn.model\_selection.cross\_val\_score} aplicando um \texttt{KFold(n\_splits=5, shuffle=True, random\_state=0)}. Retorne a lista originada pelo \texttt{cross\_val\_score} com as 5 avaliações de acurácia geradas para esse conjunto.
+\end{itemize}
+\end{exercicio}
+
+\subsection*{Exercício 6.4 -- Detecção de Spam (spam\_detection)}
+
+\begin{exercicio}{Sumário}
+\begin{itemize}
+    \item \textbf{Objetivo:} Ler e identificar em arquivos brutos compactados se o texto base trata-se de um \emph{Spam} ou de conteúdo limpo (\emph{Ham}).
+    \item \textbf{Procedimento:}
+    \begin{enumerate}
+        \item Abra via módulo nativo do Python \texttt{gzip.open()} os arquivos \texttt{src/ham.txt.gz} e \texttt{src/spam.txt.gz}. Leia o conteúdo das linhas.
+        \item Consuma uma quantidade fracionária dos arquivos baseada no parâmetro \texttt{fraction=[0.0, 1.0]}. Você pegará apenas as primeiras linhas correspondentes a esse percentual de arquivo para cada base lida (ex: fraction=0.1 lê os primeiros 10\% de cada arquivo).
+        \item Junte as amostras de treino \texttt{ham} seguidas das amostras \texttt{spam} e passe-as em massa pelo \texttt{CountVectorizer().fit\_transform} para converter em contagens vetorizadas de palavras.
+        \item Divida os vetores transformados via \texttt{train\_test\_split} usando a amostra de 75\% para treino e \texttt{random\_state=random\_state}. Atribua rótulos $0$ (ham) e $1$ (spam).
+        \item Aplique o algoritmo \texttt{MultinomialNB}.
+    \end{enumerate}
+    \item \textbf{Retorno:} A função \texttt{spam\_detection} deverá retornar uma tupla contendo o \texttt{accuracy\_score} aferido na previsão, a quantidade de elementos testados, e o total absoluto (\texttt{int}) de mensagens testadas que receberam o rótulo incorreto no fim do teste.
+\end{itemize}
+\end{exercicio}
+
+\end{document}

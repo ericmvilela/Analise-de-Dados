@@ -1,0 +1,198 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 6: Machine Learning Types\\\large Classificação Naive Bayes (Teoria)}
+\author{Tradução e Adaptação: Universidade de Helsinque (MOOC.fi)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}.
+
+\tableofcontents
+\newpage
+
+\section{Machine Learning: Classificação Naive Bayes}
+
+A classificação é uma forma de aprendizado supervisionado (\emph{supervised learning}). O objetivo é anotar todos os pontos de dados com um rótulo (\emph{label}). Aqueles pontos que têm o mesmo rótulo pertencem à mesma classe. Pode haver dois ou mais rótulos. Por exemplo, uma forma de vida pode ser classificada (de forma ampla) com os rótulos: animal, planta, fungo, arquea, bactéria, protozoário e cromista. Os pontos de dados possuem certas características (\emph{features}) observadas que podem ser usadas para prever seus rótulos. Por exemplo, se tem penas, então é mais provável que seja um animal.
+
+No aprendizado supervisionado, um algoritmo recebe primeiro um conjunto de treinamento de dados com suas características e rótulos. Em seguida, o algoritmo aprende a partir dessas características e rótulos um modelo (probabilístico), que pode ser usado posteriormente para prever os rótulos de dados nunca antes vistos.
+
+A classificação \emph{Naive Bayes} (Bayes Ingênuo) é um método de classificação rápido e simples de entender. Sua velocidade se deve a algumas simplificações que fazemos sobre as distribuições de probabilidade subjacentes, a saber, a suposição sobre a independência das características. Ainda assim, pode ser bastante poderoso, especialmente quando há características suficientes nos dados.
+
+Suponha que temos para cada rótulo $L$ uma distribuição de probabilidade. Essa distribuição dá a probabilidade para cada combinação possível de características (um vetor de características): $P(\text{features} \mid L)$.
+
+A ideia principal na classificação Bayesiana é inverter a direção da dependência: queremos prever o rótulo com base nas características: $P(L \mid \text{features})$. Isso é possível pelo teorema de Bayes:
+
+\[
+P(L \mid \text{features}) = \frac{P(\text{features} \mid L)P(L)}{P(\text{features})}
+\]
+
+Vamos assumir que temos dois rótulos $L_1$ e $L_2$, e suas distribuições associadas: $P(\text{features} \mid L_1)$ e $P(\text{features} \mid L_2)$. Se temos um ponto de dados com certas "features", cujo rótulo não conhecemos, podemos tentar prevê-lo usando a razão das probabilidades a posteriori:
+
+\[
+\frac{P(L_1 \mid \text{features})}{P(L_2 \mid \text{features})} = \frac{P(\text{features} \mid L_1)P(L_1)}{P(\text{features} \mid L_2)P(L_2)}
+\]
+
+Se a razão for maior que um, rotulamos nosso ponto de dados com o rótulo $L_1$, e se não, damos a ele o rótulo $L_2$. As probabilidades a priori (\emph{prior}) $P(L_1)$ e $P(L_2)$ dos rótulos podem ser facilmente descobertas a partir dos dados de entrada, pois para cada ponto de dados também temos o seu rótulo. O mesmo vale para as probabilidades de características condicionadas ao rótulo.
+
+Demonstraremos primeiro a classificação Naive Bayes usando distribuições Gaussianas.
+
+\begin{lstlisting}
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.datasets import make_blobs
+
+X, y = make_blobs(100, 2, centers=2, random_state=2, cluster_std=1.5)
+colors = np.array(["red", "blue"])
+plt.scatter(X[:, 0], X[:, 1], c=colors[y], s=50)
+for label, c in enumerate(colors):
+    plt.scatter([], [], c=c, label=str(label))
+plt.legend();
+\end{lstlisting}
+
+O algoritmo Naive Bayes ajustou duas distribuições Gaussianas bidimensionais aos dados. As médias e as variâncias definem essas distribuições completamente.
+
+\begin{lstlisting}
+from sklearn.naive_bayes import GaussianNB
+
+model = GaussianNB()
+model.fit(X, y);
+print("Means:\n", model.theta_)
+print("Variances:\n", model.var_)
+\end{lstlisting}
+
+\textbf{Saída esperada:}
+\begin{lstlisting}[language=]
+Means: [[-1.64939095 -9.36891451]
+        [ 1.29327924 -1.24101221]]
+Variances: [[ 2.06097005  2.47716872]
+            [ 3.33164807  2.22401384]]
+\end{lstlisting}
+
+\subsection{Avaliando a precisão (Accuracy)}
+
+O \emph{accuracy score} (pontuação de precisão) dá uma medida sobre quão bem conseguimos prever os rótulos. O valor máximo é 1.0.
+
+\begin{lstlisting}
+from sklearn.metrics import accuracy_score
+
+y_fitted = model.predict(X)
+acc = accuracy_score(y, y_fitted)
+print("Accuracy score is", acc)
+# Accuracy score is 1.0
+\end{lstlisting}
+
+A pontuação foi a melhor possível, o que não é uma surpresa, já que tentamos prever os dados que já tínhamos visto! Mais tarde, dividiremos nossos dados em duas partes: uma para aprender o modelo e outra para testar suas habilidades preditivas.
+
+\subsection{Limitações e Dados Multivariados}
+
+O problema com a classificação Bayesiana "Ingênua" é que ela tenta modelar os dados usando distribuições Gaussianas alinhadas ao longo dos eixos X e Y (assumindo independência). Se tivermos dados "inclinados", como distribuições normais multivariadas com covariância cruzada, a classificação Naive Bayes perde parte da sua representação ideal porque pressupõe falsamente que as \emph{features} não têm correlação.
+
+Mesmo obtendo uma pontuação alta de precisão, ao desenhar os eixos podemos observar graficamente que o modelo não é perfeito para distribuições correlacionadas, precisando gerar elipses estritamente alinhadas aos eixos para estimar a classe.
+
+\section{Classificação de Textos}
+
+A seguir, tentaremos classificar um conjunto de mensagens postadas em um fórum público. As mensagens foram divididas em grupos por tópicos. Portanto, temos um conjunto de dados pronto para testes de classificação. Primeiro, vamos carregar esses dados usando o \texttt{scikit-learn} e imprimir as categorias de mensagens.
+
+\begin{lstlisting}
+from sklearn.datasets import fetch_20newsgroups
+data = fetch_20newsgroups()
+print(data.target_names)
+\end{lstlisting}
+
+Focaremos em apenas quatro categorias de mensagens. A ferramenta \texttt{fetch\_20newsgroups} nos permite dividir facilmente os dados em dados de treinamento e de teste.
+
+\begin{lstlisting}
+categories = ['comp.graphics', 'rec.autos', 'sci.electronics', 'sci.crypt']
+train = fetch_20newsgroups(subset='train', categories=categories)
+test = fetch_20newsgroups(subset='test', categories=categories)
+
+print("Training data:", len(train.data))
+print("Test data:", len(test.data))
+\end{lstlisting}
+
+Usamos como características as frequências de cada palavra no conjunto de dados. Ou seja, existem tantas características quanto palavras distintas no conjunto de dados. Como as características agora são contagens, faz sentido usar a distribuição \emph{multinomial} em vez da Gaussiana.
+
+Vamos tentar modelar essas mensagens usando distribuições multinomiais. Cada categoria de mensagem tem sua própria distribuição. Uma distribuição multinomial possui $f$ parâmetros não negativos $\theta_1, \dots, \theta_f$, que somam um. Por exemplo, o parâmetro $\theta_3$ pode indicar a probabilidade da palavra "placa" aparecer em uma mensagem da categoria que essa distribuição está descrevendo.
+
+No \texttt{scikit-learn}, existe uma classe \texttt{CountVectorizer} que converte mensagens em formato de strings de texto para vetores de características. Podemos integrar essa conversão com o modelo que estamos usando (Multinomial Naive Bayes), de modo que a conversão ocorra automaticamente como parte do método \texttt{fit}. Alcançamos essa integração usando a ferramenta \texttt{make\_pipeline}.
+
+\begin{lstlisting}
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.pipeline import make_pipeline
+
+model = make_pipeline(CountVectorizer(), MultinomialNB())
+model.fit(train.data, train.target)
+labels_fitted = model.predict(test.data)
+print("Accuracy score is", accuracy_score(labels_fitted, test.target))
+# Accuracy score is ~ 0.9205
+\end{lstlisting}
+
+O classificador parece funcionar muito bem! Note que agora usamos dados separados para testar o modelo.
+
+A matriz de características é armazenada em formato esparso (\emph{sparse format}), ou seja, apenas as contagens diferentes de zero são armazenadas para economizar memória e poder de processamento.
+
+\end{document}

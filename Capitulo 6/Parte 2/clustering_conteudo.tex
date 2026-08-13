@@ -1,0 +1,161 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 6: Machine Learning Types\\\large Clustering (Agrupamento)}
+\author{Tradução e Adaptação: Universidade de Helsinque (MOOC.fi)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}.
+
+\tableofcontents
+\newpage
+
+\section{Machine Learning: Clustering (Agrupamento)}
+
+O agrupamento (\emph{clustering}) é um dos tipos de aprendizado não supervisionado (\emph{unsupervised learning}). É semelhante à classificação: o objetivo é dar um rótulo a cada ponto de dados. No entanto, diferentemente da classificação, não recebemos nenhum exemplo de rótulo associado aos dados previamente. 
+
+Devemos inferir, a partir dos dados em si, quais pontos de dados pertencem ao mesmo cluster. Isso pode ser alcançado usando alguma noção de distância entre os pontos de dados; pontos de dados no mesmo cluster estão, de alguma forma, próximos uns dos outros.
+
+\subsection{K-Means Clustering}
+Um dos métodos de agrupamento mais simples é o agrupamento $k$-médias (\emph{k-means}). Ele visa produzir um agrupamento que seja ideal no seguinte sentido:
+\begin{itemize}
+    \item O centro de cada cluster é a média de todos os pontos no cluster.
+    \item Qualquer ponto em um cluster está mais próximo do seu respectivo centro do que do centro de qualquer outro cluster.
+\end{itemize}
+
+O agrupamento \emph{k-means} recebe primeiro o número desejado de clusters, digamos $k$, como um hiperparâmetro. Em seguida, para iniciar o algoritmo, $k$ pontos do conjunto de dados são escolhidos aleatoriamente como os centros dos clusters. A partir disso, as seguintes fases são repetidas iterativamente:
+\begin{enumerate}
+    \item Qualquer ponto de dado é definido para pertencer a um cluster, cujo centro está mais próximo dele.
+    \item Então, para cada cluster, um novo centro é escolhido sendo a média dos pontos de dados contidos ali.
+\end{enumerate}
+Este procedimento é repetido até que os clusters não mudem mais. Esse tipo de algoritmo é chamado de algoritmo de Maximização de Expectativa (\emph{Expectation-Maximization - EM}), o qual sabe-se que sempre converge.
+
+\subsection{Exemplo Simples}
+A biblioteca \texttt{scikit-learn} tem uma implementação deste algoritmo. Vamos aplicá-lo a um conjunto de "bolhas" (\emph{blobs}) geradas aleatoriamente.
+
+\begin{lstlisting}
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_blobs
+from sklearn.cluster import KMeans
+
+# Gerando dados ficticios sem rotulos intencionais
+X, y = make_blobs(centers=4, n_samples=200, random_state=0, cluster_std=0.7)
+
+# Treinando o modelo
+model = KMeans(4)
+model.fit(X)
+
+print(model.cluster_centers_)
+\end{lstlisting}
+
+\subsubsection{Permutações de Rótulos e Acurácia}
+Ao obtermos um score (\texttt{accuracy\_score}) para avaliar o \textit{k-means}, podemos receber um número baixíssimo. Apesar dos agrupamentos estarem fisicamente corretos, os nomes (índices numéricos) dados arbitrariamente a cada cluster pelo algoritmo podem estar permutados em relação aos rótulos reais.
+
+Para corrigir isso, renomeamos os clusters baseando-se no rótulo original mais comum dentro dele (\textit{scipy.stats.mode}).
+
+\begin{lstlisting}
+import scipy
+def find_permutation(n_clusters, real_labels, labels):
+    permutation = []
+    for i in range(n_clusters):
+        idx = labels == i
+        new_label = scipy.stats.mode(real_labels[idx])[0]
+        permutation.append(new_label)
+    return permutation
+\end{lstlisting}
+
+\section{Exemplos Complexos e Limitações do k-means}
+
+O algoritmo \emph{k-means} pode ter dificuldades quando os clusters não possuem formatos convexos (como luas entrelaçadas ou anéis concêntricos), pois ele baseia as fronteiras do agrupamento em linhas estritamente lineares a partir do centro.
+
+\subsection{Agrupamento por Densidade (DBSCAN)}
+Para contornar o problema dos dados não-convexos, podemos usar algoritmos de agrupamento diferentes. O algoritmo \texttt{DBSCAN} é baseado em densidades e funciona bem em dados cuja densidade nos clusters é uniforme e bem delineada por espaços vazios.
+
+\begin{lstlisting}
+from sklearn.datasets import make_moons
+from sklearn.cluster import DBSCAN
+
+X, y = make_moons(200, noise=0.05, random_state=0)
+model = DBSCAN(eps=0.3)
+model.fit(X)
+\end{lstlisting}
+
+A boa notícia é que o \texttt{DBSCAN} não exige que o usuário especifique o número de clusters. Mas, agora o algoritmo depende de outro hiperparâmetro vital: um limite matemático para a distância chamado \texttt{eps}.
+
+\section{Hierarchical Clustering (Agrupamento Hierárquico)}
+
+O agrupamento hierárquico funciona primeiro colocando cada ponto de dado em seu próprio cluster solitário e, em seguida, fundindo os clusters passo a passo com base em alguma regra, até que restem apenas a quantidade estipulada de agrupamentos.
+
+Com uma medida de distância original entre pontos $d(u,v)$, definimos a distância entre conjuntos através dos métodos (linkages):
+\begin{itemize}
+    \item \textbf{Single:} usa a menor distância possível entre os membros.
+    \item \textbf{Complete:} usa a maior distância possível.
+    \item \textbf{Average:} a média ponderada de todas as distâncias.
+    \item \textbf{Ward:} tenta minimizar a variância a cada passo de junção do cluster.
+\end{itemize}
+
+O resultado de ligações hierárquicas pode ser lindamente visualizado com \emph{Heatmaps} pareados com \emph{Dendrogramas} utilizando a biblioteca \texttt{seaborn.clustermap}.
+
+\end{document}
