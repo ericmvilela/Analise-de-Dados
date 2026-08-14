@@ -2,150 +2,118 @@
 
 ## Sobre o projeto
 
-Este repositório reúne uma versão em **português brasileiro** do curso **Data Analysis with Python 2024–2025**, disponibilizado pelo **University of Helsinki MOOC Center**.
+Este repositório reúne uma **tradução e adaptação para português brasileiro** do curso **Data Analysis with Python 2024–2025**, disponibilizado gratuitamente pela **University of Helsinki**, através da plataforma **MOOC.fi**.
 
-O projeto está organizado em **7 capítulos**, divididos em várias partes, acompanhando a sequência de estudos do curso original.
+O projeto está organizado em **7 capítulos**, divididos em várias partes, acompanhando fielmente a sequência de estudos do curso original.
 
-O objetivo é facilitar o estudo de **Python e análise de dados**, mantendo explicações, exemplos de programação, exercícios, soluções, figuras e materiais LaTeX organizados em um único repositório.
+O objetivo é facilitar o estudo de **Python e análise de dados** em português, mantendo o conteúdo teórico, os exercícios e as soluções organizados em arquivos LaTeX (com PDF já compilado) em um único repositório.
 
-> **Referência institucional**
+> **Aviso importante**
 >
-> The University of Helsinki MOOC Center makes high-quality online education possible by developing and researching educational software and online learning materials. Teachers both within and without the University of Helsinki rely on our tools to create impactful teaching materials. Our popular Massive Open Online Courses (MOOCs) have been available through MOOC.fi since 2012.
+> Este é um projeto **não oficial**, feito por um estudante, sem qualquer vínculo com a University of Helsinki ou com o MOOC.fi. O conteúdo aqui é uma tradução/adaptação para fins de estudo pessoal, compartilhada publicamente para ajudar outras pessoas de língua portuguesa. Os créditos pelo curso original — e os créditos oficiais, certificação e ECTS — pertencem exclusivamente à University of Helsinki. Veja a seção [Licença](#licença) para mais detalhes.
 
 ## Conteúdo
 
-O curso está organizado em 7 capítulos:
+O curso está organizado em 7 capítulos, cada um com uma ou mais partes:
 
-```text
-Data Analysis with Python
+```
+Data Analysis with Python (PT-BR)
 │
 ├── Capítulo 1 — Python
-│   ├── Parte 1
-│   ├── Parte 2
 │
-├── Capítulo 2 — Mais Python
-│   ├── Parte 1
-│   ├── Parte 2
+├── Capítulo 2 — Mais Python e NumPy
+│   ├── Parte 1 — Python (continuação)
+│   └── Parte 2 — NumPy (Parte 1)
 │
-├── Capítulo 3 — Mais NumPy
-│   ├── NumPy
-│   ├── NumPy Parte 2
-│   ├── Matplotlib
-│   ├── Processamento de imagens
+├── Capítulo 3 — Mais NumPy, Imagens, Bibliotecas e Pandas
+│   ├── Parte 1 — NumPy (Parte 2)
+│   ├── Parte 2 — Matplotlib
+│   ├── Parte 3 — Processamento de Imagens
+│   └── Parte 4 — Pandas (Parte 1)
 │
-├── Capítulo 4 — Pandas
-│   ├── Parte 1
+├── Capítulo 4 — Mais Pandas
+│   └── Pandas (DataFrames na prática)
 │
-├── Capítulo 5 — Mais Pandas e Machine learning
-│   ├── Parte 1
-│   ├── Parte 2
+├── Capítulo 5 — Ainda mais Pandas e Machine Learning
+│   ├── Parte 1 — Pandas (Parte 3)
+│   └── Parte 2 — Machine Learning: Regressão Linear
 │
-├── Capítulo 6 — Mais Machine learning 
-│   ├── Parte 1
+├── Capítulo 6 — Tipos de Machine Learning
+│   ├── Parte 1 — Naive Bayes
+│   ├── Parte 2 — Clustering (Agrupamento)
+│   └── Parte 3 — PCA (Principal Component Analysis)
 │
-└── Capítulo 7 — Projeto
-    ├── Materiais do projeto
-    └── Exercícios e exemplos
+└── Capítulo 7 — Project Work
+    ├── Parte 1 — Trabalho final do curso
+    └── Parte 2 — Considerações finais
 ```
 
-> Os nomes exatos das partes podem variar conforme os arquivos disponibilizados no repositório.
+## Estrutura real do repositório
 
-## Estrutura do repositório
-
-```text
+```
 .
 ├── README.md
 ├── LICENSE
+├── .gitignore
 │
-├── chapter-1/
-│   ├── part-1/
-│   ├── part-2/
-│   └── ...
+├── Capitulo 1/
+│   ├── python_conteudo.tex / .pdf
+│   ├── python_exercicios.tex / .pdf
+│   └── python_solucoes.tex / .pdf
 │
-├── chapter-2/
-│   ├── part-1/
-│   ├── part-2/
-│   └── ...
+├── Capitulo 2/
+│   ├── Parte 1/   (Python — continuação)
+│   └── Parte 2/   (NumPy — Parte 1)
 │
-├── chapter-3/
-│   ├── numpy/
-│   ├── numpy-part-2/
-│   ├── matplotlib/
-│   ├── image-processing/
-│   └── ...
+├── Capitulo 3/
+│   ├── Parte 1/   (NumPy — Parte 2)
+│   ├── Parte 2/   (Matplotlib)
+│   ├── Parte 3/   (Processamento de imagens)
+│   └── Parte 4/   (Pandas — Parte 1)
 │
-├── chapter-4/
-│   ├── part-1/
-│   ├── part-2/
-│   └── ...
+├── Capitulo 4/    (Pandas — sem subpastas)
 │
-├── chapter-5/
-│   ├── part-1/
-│   ├── part-2/
-│   └── ...
+├── Capitulo 5/
+│   ├── Parte 1/   (Pandas — Parte 3)
+│   └── Parte 2/   (Regressão linear)
 │
-├── chapter-6/
-│   ├── part-1/
-│   └── ...
+├── Capitulo 6/
+│   ├── Parte 1/   (Naive Bayes)
+│   ├── Parte 2/   (Clustering)
+│   └── Parte 3/   (PCA)
 │
-├── chapter-7/
-│   ├── project/
-│   └── ...
-│
-├── solutions/
-│   ├── chapter-1/
-│   ├── chapter-2/
-│   ├── chapter-3/
-│   ├── chapter-4/
-│   ├── chapter-5/
-│   ├── chapter-6/
-│   └── chapter-7/
-│
-├── images/
-├── data/
-└── latex/
-    ├── main.tex
-    ├── chapters/
-    ├── figures/
-    └── solutions/
+└── Capitulo 7/
+    ├── Parte 1/   (Project Work)
+    └── Parte 2/   (Considerações finais)
 ```
+
+Cada pasta de parte contém três arquivos `.tex` (com o `.pdf` já compilado ao lado):
+
+```
+Capitulo 3/Parte 2/
+├── matplotlib_conteudo.tex     → material teórico
+├── matplotlib_conteudo.pdf
+├── matplotlib_exercicios.tex   → enunciados dos exercícios
+├── matplotlib_exercicios.pdf
+├── matplotlib_solucoes.tex     → soluções propostas
+└── matplotlib_solucoes.pdf
+```
+
+> Não há pastas separadas `solutions/`, `images/`, `data/` ou `latex/` — cada parte é autocontida, com o conteúdo, os exercícios e as soluções lado a lado.
 
 ## O que você encontrará
 
 ### 📚 Material traduzido
 
-Cada parte do curso possui uma versão em português, organizada em arquivos LaTeX e, quando disponível, em PDF.
-
-### 💻 Exemplos em Python
-
-Os exemplos apresentados durante as aulas são organizados em arquivos `.py` para facilitar testes e experimentação.
+Cada parte do curso possui uma versão em português, organizada em arquivo LaTeX e já compilada em PDF.
 
 ### 📝 Exercícios
 
-Os exercícios são mantidos separados por capítulo e parte, seguindo a organização do curso.
+Os exercícios são mantidos em um arquivo próprio (`*_exercicios.tex`), separado do conteúdo teórico, seguindo a numeração original do curso (ex.: Exercício 1.1, 1.2, ...).
 
 ### ✅ Soluções
 
-As soluções ficam em uma estrutura separada para permitir que o estudante tente os exercícios antes de consultar as respostas.
-
-```text
-solutions/
-├── chapter-1/
-├── chapter-2/
-├── chapter-3/
-├── chapter-4/
-├── chapter-5/
-├── chapter-6/
-└── chapter-7/
-```
-
-### 🖼️ Imagens e figuras
-
-As figuras utilizadas no material são armazenadas em pastas próprias para que possam ser reutilizadas nos documentos LaTeX e nos PDFs.
-
-### 📄 LaTeX
-
-O material foi organizado para permitir a geração dos PDFs diretamente a partir dos arquivos `.tex`.
+As soluções ficam em um arquivo separado (`*_solucoes.tex`) para permitir que você tente resolver os exercícios antes de consultar as respostas. São soluções elaboradas de forma independente para fins de estudo, com base nos enunciados originais do curso — não são o gabarito oficial do MOOC.fi.
 
 ## Tecnologias utilizadas
 
@@ -153,96 +121,58 @@ O material foi organizado para permitir a geração dos PDFs diretamente a parti
 - NumPy
 - Matplotlib
 - Pandas
-- SciPy
-- Jupyter Notebook
+- Scikit-learn
 - LaTeX
 
 ## Como estudar
 
-A recomendação é seguir os capítulos na ordem:
+A recomendação é seguir os capítulos na ordem, e dentro de cada capítulo, cada parte em sequência:
 
-```text
-Capítulo 1
-    ↓
-Capítulo 2
-    ↓
-Capítulo 3
-    ↓
-Capítulo 4
-    ↓
-Capítulo 5
-    ↓
-Capítulo 6
-    ↓
-Capítulo 7
+```
+Capítulo 1 → Capítulo 2 → Capítulo 3 → Capítulo 4 → Capítulo 5 → Capítulo 6 → Capítulo 7
 ```
 
-Dentro de cada capítulo, estude cada parte em sequência e tente resolver os exercícios **antes** de consultar as soluções.
+Tente resolver os exercícios **antes** de consultar as soluções.
 
 ## Compilação do LaTeX
 
-Para gerar os PDFs localmente, instale uma distribuição LaTeX, como:
+Para gerar (ou regenerar) os PDFs localmente, instale uma distribuição LaTeX:
 
-- TeX Live
-- MiKTeX
+- **Windows:** [MiKTeX](https://miktex.org/)
+- **macOS:** [MacTeX](https://tug.org/mactex/)
+- **Linux:** `texlive-full` (ou os pacotes equivalentes, incluindo `texlive-lang-portuguese`, necessário por causa do `\usepackage[portuguese]{babel}`)
 
 Depois, entre na pasta correspondente e execute:
 
 ```bash
-pdflatex main.tex
+pdflatex nome_do_arquivo.tex
 ```
 
-Em projetos que utilizam referências ou índice, pode ser necessário executar a compilação mais de uma vez.
-
-## Exemplo de uma parte
-
-```text
-chapter-3/
-└── matplotlib/
-    ├── main.tex
-    ├── main.pdf
-    ├── solucoes_exercicios.tex
-    ├── solucoes_exercicios.pdf
-    ├── codigo/
-    │   └── solucoes.py
-    └── figuras/
-```
+Como os documentos usam sumário/referências, pode ser necessário rodar o comando duas vezes seguidas para tudo ficar correto.
 
 ## Objetivo do repositório
 
 Este projeto busca:
 
-- facilitar o acesso ao conteúdo em português;
-- organizar os capítulos e partes do curso;
-- centralizar exemplos e exercícios;
-- facilitar a compilação dos materiais em LaTeX;
-- servir como material de apoio para estudos de Python e análise de dados.
+- facilitar o acesso ao conteúdo do curso em português;
+- manter a organização por capítulo e parte fiel à estrutura original do MOOC.fi;
+- centralizar teoria, exercícios e soluções em um único lugar por parte;
+- servir como material de apoio para quem está estudando Python e análise de dados.
 
-## Créditos
+## Créditos e licença
 
-Curso original:
+O curso original — **Data Analysis with Python 2024–2025** — é de autoria da **University of Helsinki**, disponibilizado através do **MOOC.fi**:
 
-**Data Analysis with Python 2024–2025**  
-University of Helsinki — MOOC.fi
+🔗 <https://courses.mooc.fi/org/uh-cs/courses/data-analysis-with-python-2024-2025/>
 
-O conteúdo original, a estrutura do curso e os materiais institucionais pertencem aos seus respectivos autores e à Universidade de Helsinki.
+Todo o conteúdo, a estrutura pedagógica e os materiais institucionais originais pertencem aos seus respectivos autores e à University of Helsinki. Este repositório é uma **tradução e adaptação não oficial**, feita para fins educacionais e sem fins lucrativos. Consulte o arquivo [`LICENSE`](./LICENSE) para os termos completos.
 
-Este repositório é uma organização/tradução para fins educacionais. Consulte os termos e a licença do material original antes de redistribuir conteúdo derivado.
-
-## Fonte
-
-Curso original:
-
-https://courses.mooc.fi/org/uh-cs/courses/data-analysis-with-python-2024-2025/
+Se você quer o curso oficial, com certificação e créditos ECTS, acesse o link acima e estude diretamente pela plataforma do MOOC.fi.
 
 ## Status
 
-🚧 **Projeto em desenvolvimento**
-
-As diferentes partes do curso são adicionadas e revisadas progressivamente.
+🚧 **Projeto em desenvolvimento** — as partes são revisadas progressivamente.
 
 ---
 
-<p align="center">
-  Desenvolvido para estudos de Python e Análise de Dados
-</p>
+Desenvolvido para estudos de Python e Análise de Dados.

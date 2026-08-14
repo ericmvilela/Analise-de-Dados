@@ -1,0 +1,65 @@
+Aviso de Licença e Atribuição
+==============================
+
+Este repositório contém uma TRADUÇÃO E ADAPTAÇÃO NÃO OFICIAL, para português
+brasileiro, do curso "Data Analysis with Python 2024-2025", produzido e
+disponibilizado gratuitamente pela University of Helsinki através da
+plataforma MOOC.fi:
+
+    https://courses.mooc.fi/org/uh-cs/courses/data-analysis-with-python-2024-2025/
+
+1. Titularidade do conteúdo original
+-------------------------------------
+Todo o conteúdo pedagógico original — incluindo, mas não se limitando a,
+enunciados de exercícios, estrutura do curso, exemplos, textos teóricos e
+material de apoio — foi criado pela University of Helsinki / MOOC.fi e
+pertence aos seus respectivos autores. Nenhum direito sobre o material
+original é reivindicado por este repositório.
+
+2. Natureza deste repositório
+-------------------------------
+Este repositório é um projeto pessoal e não oficial, mantido por um
+estudante, com os seguintes objetivos:
+
+  - traduzir o conteúdo do curso para português brasileiro;
+  - reorganizar o material traduzido em documentos LaTeX/PDF, mantendo a
+    estrutura de capítulos e partes do curso original;
+  - propor soluções independentes para os exercícios, elaboradas para fins
+    de estudo (essas soluções NÃO são o gabarito oficial do MOOC.fi).
+
+Este projeto NÃO é afiliado, endossado, patrocinado ou certificado pela
+University of Helsinki ou pelo MOOC.fi. Não confere certificação, créditos
+ECTS ou qualquer validade acadêmica oficial. Para obter o curso oficial,
+com certificação, acesse diretamente o link acima.
+
+3. Uso permitido
+------------------
+O material traduzido/adaptado deste repositório (textos em português,
+organização dos arquivos e soluções propostas) pode ser usado livremente
+para fins pessoais, educacionais e não comerciais, com atribuição a este
+repositório e ao curso original da University of Helsinki / MOOC.fi.
+
+Uso comercial deste material, ou qualquer forma de redistribuição que
+sugira afiliação oficial com a University of Helsinki ou o MOOC.fi, NÃO é
+permitido.
+
+4. Isenção de responsabilidade
+---------------------------------
+Este material é fornecido "como está", sem garantias de qualquer tipo,
+incluindo garantias de exatidão, completude ou adequação a um propósito
+específico. As traduções e soluções podem conter erros; em caso de dúvida,
+consulte sempre o material oficial do curso.
+
+5. Solicitações de remoção
+-----------------------------
+Caso a University of Helsinki, o MOOC.fi, ou qualquer titular de direitos
+sobre o conteúdo original deseje solicitar a remoção ou alteração de
+qualquer parte deste repositório, basta abrir uma issue ou entrar em
+contato diretamente com o mantenedor do repositório. O pedido será
+atendido prontamente.
+
+---
+
+Curso original: Data Analysis with Python 2024-2025
+Autoria: University of Helsinki (MOOC.fi)
+Link: https://courses.mooc.fi/org/uh-cs/courses/data-analysis-with-python-2024-2025/
