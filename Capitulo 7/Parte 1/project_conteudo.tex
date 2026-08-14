@@ -1,0 +1,120 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 7: Project Work\\\large Visão Geral e Instruções}
+\author{Tradução e Adaptação: Universidade de Helsinque (MOOC.fi)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}.
+
+\tableofcontents
+\newpage
+
+\section{Introdução ao Projeto Final (Project Work)}
+
+Nesta etapa final do curso, o estudante deve escolher e realizar um trabalho de projeto prático (\emph{project work}). Existem três opções principais de projetos disponíveis:
+\begin{enumerate}
+    \item \textbf{Análise de Sequências Biológicas} (\textit{Biological Sequence Analysis} - Parte 7);
+    \item \textbf{Análise de Regressão em Dados Médicos} (\textit{Regression Analysis on Medical Data} - Parte 8);
+    \item \textbf{Análise de Dados de Fósseis} (\textit{Fossil Data Analysis}).
+\end{enumerate}
+
+Para iniciar qualquer um dos projetos, o aluno deve baixar os exercícios e/ou cadernos de anotações (\emph{notebooks}) através do servidor TMC, tentar resolver o máximo de exercícios possíveis de forma independente e submeter as soluções para validação automática. O servidor TMC atua como uma ferramenta de auxílio ao progresso e validação prévia antes do processo de revisão por pares (\emph{peer review}).
+
+\section{Fluxos de Trabalho Individuais}
+
+Cada projeto possui um fluxo de trabalho específico:
+
+\subsection{1. Análise de Sequências (Sequence Analysis)}
+O estudante baixa a parte correspondente via TMC após completar a quantidade exigida da parte anterior. Dentro da pasta \texttt{src}, há o notebook \texttt{project\_notebook\_sequence\_analysis.ipynb}. O aluno deve preencher as células conforme as instruções e testar a integridade usando o comando \texttt{tmc test}. 
+
+\begin{quote}
+\textbf{Nota sobre os relatórios:} Ao lado de cada exercício no relatório, existem caixas de texto para preenchimento. A primeira serve para descrever, com suas próprias palavras, a ideia lógica da solução; a segunda serve para analisar os resultados obtidos com os dados de entrada.
+\end{quote}
+
+\subsection{2. Análise de Regressão (Regression Analysis)}
+Consiste em ler a introdução teórica do documento específico de regressão, preenchendo diretamente as soluções nas células fornecidas no notebook sem alterar as linhas que contêm comentários de marcação de exercício (ex: \texttt{\# exercise x}), pois os testes automatizados dependem estritamente delas.
+
+\subsection{3. Análise de Fósseis (Fossil Data Analysis)}
+Siga rigorosamente as instruções do guia de atribuição específica do tema de fósseis fornecido nos materiais suplementares da plataforma MOOC.
+
+\section{Processo de Revisão por Pares (Peer Review)}
+Após a finalização e submissão do arquivo do projeto em formato Jupyter Notebook (\texttt{.ipynb}) na plataforma MOOC, o estudante precisará realizar a avaliação e o feedback de relatórios submetidos por outros três colegas.
+
+\subsection{Executando Testes de Outros Alunos}
+Se desejar testar o código de um colega durante a revisão por pares para verificar a exatidão das soluções:
+\begin{itemize}
+    \item Vá para uma pasta temporária (como \texttt{/tmp} em sistemas Unix) para evitar sobrescrever seu próprio trabalho.
+    \item Baixe os testes usando o comando do cliente TMC adequado à versão da turma.
+    \item Substitua o notebook do estudante na pasta de origem correspondente e execute o comando \texttt{tmc test}.
+\end{itemize}
+
+\subsection{Envio via TMC Paste}
+Para enviar o projeto para a plataforma de avaliação:
+\begin{itemize}
+    \item \textbf{Via Cliente Gráfico (VS Code / TMC Client):} Clique com o botão direito no notebook do projeto e escolha \textit{Send Exercise to TMC Paste}. Copie o link gerado (iniciado com \url{https://tmc.mooc.fi/paste/}) e cole-o no formulário oficial da atividade.
+    \item \textbf{Via CLI (Terminal):} Utilize o comando \texttt{tmc paste} dentro da pasta do exercício correspondente.
+\end{itemize}
+
+\end{document}

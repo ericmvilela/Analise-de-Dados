@@ -1,0 +1,123 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codegreen}{rgb}{0.1,0.5,0.1}
+\definecolor{codepurple}{rgb}{0.5,0.1,0.5}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+
+\lstdefinestyle{python}{
+    backgroundcolor=\color{codebg},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{codepurple}\bfseries,
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    language=Python,
+    showstringspaces=false,
+    tabsize=4,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1 {ä}{{\"a}}1 {ö}{{\"o}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1
+}
+\lstset{style=python}
+
+\newtcolorbox{objetivos}[1][]{
+  colback=green!5!white,
+  colframe=green!40!black,
+  title=O que você vai aprender nesta página,
+  fonttitle=\bfseries,
+  #1
+}
+
+\newtcolorbox{exercicio}[1]{
+  colback=blue!5!white,
+  colframe=blue!40!black,
+  title=#1,
+  fonttitle=\bfseries
+}
+
+\newtcolorbox{solucao}{
+  colback=yellow!5!white,
+  colframe=orange!60!black,
+  title=Solução proposta,
+  fonttitle=\bfseries
+}
+
+\title{\textbf{Data Analysis with Python 2024--2025}\\Parte 7: Project Work\\\large Orientações de Solução e Comandos Úteis}
+\author{Tradução e Adaptação: Universidade de Helsinque (MOOC.fi)}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Nota Importante}
+Este material é uma tradução e adaptação baseada no curso \textit{Data Analysis with Python 2024-2025}, oferecido pela \textbf{Universidade de Helsinque (MOOC.fi)}. As orientações a seguir descrevem os padrões de execução e envio para os projetos finais.
+
+\tableofcontents
+\newpage
+
+\section{Orientações de Solução - Capítulo 7}
+
+Como o Capítulo 7 trata do \textbf{Trabalho de Projeto Final} (\emph{Project Work}), não há uma lista única de códigos fixos padrão, mas sim frentes práticas divididas nos três grandes temas escolhidos pelo estudante. Abaixo encontram-se os padrões de comandos e procedimentos recomendados para garantir o sucesso na entrega.
+
+\subsection*{1. Validação Local de Exercícios}
+
+Para testar o andamento das funções desenvolvidas dentro dos diretórios de projeto baixados pelo TMC, utilize o comando padrão no terminal:
+
+\begin{solucao}
+\begin{lstlisting}
+# Executa os testes automatizados associados ao projeto ativo
+tmc test
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{2. Como Executar Testes de Outros Alunos (Revisão por Pares)}
+
+Para testar de forma segura o código de um colega sem correr o risco de corromper o seu próprio repositório de exercícios:
+
+\begin{solucao}
+\begin{lstlisting}
+# 1. Mude para um diretorio temporario no sistema Unix
+cd /tmp
+
+# 2. Baixe os arquivos de teste originais da plataforma
+tmc download -a hy-data-analysis-with-python-2020
+
+# 3. Substitua o notebook do estudante na pasta correspondente
+# Exemplo para Regressao:
+# part08-e01_regression/src/project_notebook_regression_analysis.ipynb
+
+# 4. Execute a bateria de testes isoladamente
+tmc test part08-e01_regression
+\end{lstlisting}
+\end{solucao}
+
+\subsection*{3. Envio de Tarefas via Terminal (TMC CLI)}
+
+Caso prefira utilizar a interface de linha de comando para gerar o link de compartilhamento e submissão por \emph{paste}:
+
+\begin{solucao}
+\begin{lstlisting}
+# Entre na pasta do exercicio do projeto e execute:
+tmc paste
+\end{lstlisting}
+\end{solucao}
+
+O terminal retornará um link URL oficial (iniciado com \url{https://tmc.mooc.fi/paste/}) que deverá ser copiado e submetido no formulário de acompanhamento da universidade.
+
+\end{document}
